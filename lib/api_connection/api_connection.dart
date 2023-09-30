@@ -1,5 +1,6 @@
 class API {
-  static const hostConnect = "http://192.168.100.43/api_store";
+  // static const hostConnect = "http://192.168.100.43/api_store";
+  static const hostConnect = "https://mordant-shed.000webhostapp.com/api_store";
   static const hostConnectUser = "$hostConnect/user";
 
   //signUp user

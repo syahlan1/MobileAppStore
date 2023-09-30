@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:store_app/users/authentication/login_screen.dart';
+import 'package:store_app/users/fragments/dashboard_of_fragments.dart';
+import 'package:store_app/users/userPreferences/user_preferences.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -17,9 +19,16 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.purple,
       ),
-      home: FutureBuilder(builder: (context, dataSnapShot) {
-        return LoginScreen();
-      }),
+      home: FutureBuilder(
+        future: RememberUserPrefs.readUserInfo(),
+        builder: (context, dataSnapShot) {
+          if (dataSnapShot.data == null) {
+            return LoginScreen();
+          } else {
+            return DashboardOfFragments();
+          }
+        },
+      ),
     );
   }
 }

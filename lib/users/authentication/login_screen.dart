@@ -41,7 +41,7 @@ class _LoginScreenState extends State<LoginScreen> {
           User userInfo = User.fromJson(resBodyOfLogin["userData"]);
 
           //save userInfo to local Storage using Shared Prefrences
-          await RememberUserPrefs.saveRememberUser(userInfo);
+          await RememberUserPrefs.storeUserInfo(userInfo);
 
           Future.delayed(Duration(milliseconds: 2000), () {
             Get.to(DashboardOfFragments());
@@ -277,7 +277,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             const Text(
                               "Or",
                               style: TextStyle(
-                                color: Color(0xff7f8fa6),
+                                color: Colors.grey,
                               ),
                             ),
 
