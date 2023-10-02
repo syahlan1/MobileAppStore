@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
+import 'package:store_app/admin/admin_login.dart';
 import 'package:store_app/api_connection/api_connection.dart';
 import 'package:store_app/users/authentication/signup_screen.dart';
 import 'package:store_app/users/fragments/dashboard_of_fragments.dart';
@@ -292,7 +293,9 @@ class _LoginScreenState extends State<LoginScreen> {
                                   ),
                                 ),
                                 TextButton(
-                                  onPressed: () {},
+                                  onPressed: () {
+                                    Get.to(AdminLoginScreen());
+                                  },
                                   child: const Text(
                                     "Click Here",
                                     style: TextStyle(
