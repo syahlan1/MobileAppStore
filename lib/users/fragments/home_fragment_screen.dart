@@ -3,8 +3,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:get/get_core/src/get_main.dart';
+import 'package:get/get_navigation/get_navigation.dart';
 import 'package:http/http.dart' as http;
 import 'package:store_app/api_connection/api_connection.dart';
+import 'package:store_app/users/item/item_details_screen.dart';
 import 'package:store_app/users/model/clothes.dart';
 
 class HomeFragmentScreen extends StatelessWidget {
@@ -348,7 +351,9 @@ class HomeFragmentScreen extends StatelessWidget {
                 Clothes eachClothItemRecord = dataSnapShot.data![index];
 
                 return GestureDetector(
-                  onTap: () {},
+                  onTap: () {
+                    Get.to(ItemDetailsScreen(itemInfo: eachClothItemRecord));
+                  },
                   child: Container(
                     margin: EdgeInsets.fromLTRB(
                       16,
