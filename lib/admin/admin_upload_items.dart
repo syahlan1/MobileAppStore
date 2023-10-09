@@ -1,10 +1,14 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_navigation/get_navigation.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:store_app/admin/admin_login.dart';
+import 'package:http/http.dart' as http;
+import 'package:store_app/api_connection/api_connection.dart';
 
 class AdminUploadItemsScreen extends StatefulWidget {
   @override
@@ -161,6 +165,90 @@ class _AdminUploadItemsScreenState extends State<AdminUploadItemsScreen> {
     );
   }
 
+  //uploadItemFormScreen methods
+  uploadItemImage() async {
+    var requestImgurApi = http.MultipartRequest(
+        "POST", Uri.parse("https://api.imgur.com/3/image"));
+
+    String imageName = DateTime.now().millisecondsSinceEpoch.toString();
+    requestImgurApi.fields['title'] = imageName;
+    requestImgurApi.headers['Authorization'] = "Client-ID " + "93482787e16e939";
+
+    var imageFile = await http.MultipartFile.fromPath(
+      'image',
+      pickedImageXFile!.path,
+      filename: imageName,
+    );
+
+    requestImgurApi.files.add(imageFile);
+    var responseFromImgurApi = await requestImgurApi.send();
+
+    var responseDataFromImgurApi = await responseFromImgurApi.stream.toBytes();
+    var resultFromImgurApi = String.fromCharCodes(responseDataFromImgurApi);
+
+    print("Result :: "); //testing
+    print(resultFromImgurApi); //testing
+
+    Map<String, dynamic> jsonRes = json.decode(resultFromImgurApi);
+    imageLink = (jsonRes["data"]["link"]).toString();
+    String deleteHash = (jsonRes["data"]["deletehash"]).toString();
+
+    print("imageLink :: "); //testing
+    print(imageLink); //testing
+
+    SaveItemInfoToDatabase();
+  }
+
+  SaveItemInfoToDatabase() async {
+    List<String> tagsList = tagsController.text.split(',');
+    List<String> sizesList = sizesController.text.split(',');
+    List<String> colorsList = colorsController.text.split(',');
+
+    try {
+      var response = await http.post(
+        Uri.parse(API.uploadNewItems),
+        body: {
+          'item_id': '1',
+          'name': nameController.text.trim().toString(),
+          'rating': ratingController.text.trim().toString(),
+          'tags': tagsList.toString(),
+          'price': priceController.text.trim().toString(),
+          'sizes': sizesList.toString(),
+          'colors': colorsList.toString(),
+          'description': descriptionController.text.trim().toString(),
+          'image': imageLink.toString(),
+        },
+      );
+
+      if (response.statusCode == 200) {
+        var resBodyOfValidateEmail = jsonDecode(response.body);
+
+        if (resBodyOfValidateEmail['success'] == true) {
+          Fluttertoast.showToast(msg: "New item uploaded successfully");
+
+          setState(() {
+            pickedImageXFile = null;
+            nameController.clear();
+            ratingController.clear();
+            tagsController.clear();
+            priceController.clear();
+            sizesController.clear();
+            colorsController.clear();
+            descriptionController.clear();
+          });
+
+          Get.to(AdminUploadItemsScreen());
+        } else {
+          Fluttertoast.showToast(msg: "Item not uploaded. Error, Try Again");
+        }
+      } else {
+        Fluttertoast.showToast(msg: "Status is not 200");
+      }
+    } catch (errorMsg) {
+      print("Error:: " + errorMsg.toString());
+    }
+  }
+
   Widget uploadItemFormScreen() {
     return Scaffold(
       backgroundColor: Color(0xff192a56),
@@ -180,7 +268,17 @@ class _AdminUploadItemsScreenState extends State<AdminUploadItemsScreen> {
         centerTitle: true,
         leading: IconButton(
           onPressed: () {
-            Get.to(AdminLoginScreen());
+            setState(() {
+              pickedImageXFile = null;
+              nameController.clear();
+              ratingController.clear();
+              tagsController.clear();
+              priceController.clear();
+              sizesController.clear();
+              colorsController.clear();
+              descriptionController.clear();
+            });
+            Get.to(AdminUploadItemsScreen());
           },
           icon: Icon(
             Icons.clear,
@@ -189,7 +287,9 @@ class _AdminUploadItemsScreenState extends State<AdminUploadItemsScreen> {
         actions: [
           TextButton(
             onPressed: () {
-              Get.to(AdminLoginScreen());
+              Fluttertoast.showToast(msg: "Uploading now..");
+
+              uploadItemImage();
             },
             child: Text(
               "Done",
@@ -580,7 +680,11 @@ class _AdminUploadItemsScreenState extends State<AdminUploadItemsScreen> {
                             borderRadius: BorderRadius.circular(30),
                             child: InkWell(
                               onTap: () {
-                                if (formKey.currentState!.validate()) {}
+                                if (formKey.currentState!.validate()) {
+                                  Fluttertoast.showToast(
+                                      msg: "Uploading now..");
+                                  uploadItemImage();
+                                }
                               },
                               borderRadius: BorderRadius.circular(30),
                               child: const Padding(

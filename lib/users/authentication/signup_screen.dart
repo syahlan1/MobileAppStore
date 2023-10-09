@@ -42,6 +42,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
           //register & save new user record to database
           registerAndSaveUserRecord();
         }
+      } else {
+        //register & save new user record to database
+        Fluttertoast.showToast(msg: "Status is not 200");
       }
     } catch (e) {
       print(e.toString());
@@ -75,6 +78,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
         } else {
           Fluttertoast.showToast(msg: "Error Occurred, Try Again.");
         }
+      } else {
+        //register & save new user record to database
+        Fluttertoast.showToast(msg: "Status is not 200");
       }
     } catch (e) {
       print(e.toString());

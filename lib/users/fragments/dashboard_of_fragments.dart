@@ -11,14 +11,14 @@ import 'package:store_app/users/userPreferences/current_user.dart';
 class DashboardOfFragments extends StatelessWidget {
   CurrentUser _rememberCurrentUser = Get.put(CurrentUser());
 
-  List<Widget> _fragmentScreens = [
+  final List<Widget> _fragmentScreens = [
     HomeFragmentScreen(),
     FavoritesFragmentScreen(),
     OrderFragmentScreen(),
     ProfileFragmentScreen(),
   ];
 
-  List _navigationButtonsProperties = [
+  final List _navigationButtonsProperties = [
     {
       "active_icon": Icons.home,
       "non_active_icon": Icons.home_outlined,
