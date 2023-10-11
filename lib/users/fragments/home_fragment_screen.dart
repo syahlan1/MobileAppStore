@@ -185,9 +185,12 @@ class HomeFragmentScreen extends StatelessWidget {
               itemCount: dataSnapShot.data!.length,
               scrollDirection: Axis.horizontal,
               itemBuilder: (context, index) {
+                Clothes eachClothItemRecord = dataSnapShot.data![index];
                 Clothes eachClothItemData = dataSnapShot.data![index];
                 return GestureDetector(
-                  onTap: () {},
+                  onTap: () {
+                    Get.to(ItemDetailsScreen(itemInfo: eachClothItemRecord));
+                  },
                   child: Container(
                     width: 200,
                     margin: EdgeInsets.fromLTRB(

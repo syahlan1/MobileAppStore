@@ -1,8 +1,18 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_navigation/get_navigation.dart';
+import 'package:store_app/api_connection/api_connection.dart';
+import 'package:store_app/users/controllers/item_details_controller.dart';
 import 'package:store_app/users/model/clothes.dart';
+import 'package:http/http.dart' as http;
+import 'package:store_app/users/model/user.dart';
+import 'package:store_app/users/userPreferences/current_user.dart';
+import 'package:store_app/users/userPreferences/user_preferences.dart';
 
 class ItemDetailsScreen extends StatefulWidget {
   final Clothes? itemInfo;
@@ -16,6 +26,36 @@ class ItemDetailsScreen extends StatefulWidget {
 }
 
 class _ItemDetailsScreenState extends State<ItemDetailsScreen> {
+  final itemDetailsController = Get.put(ItemDetailsController());
+  final currentOnlineUser = Get.put(CurrentUser());
+
+  addItemToCart() async {
+    try {
+      var res = await http.post(
+        Uri.parse(API.addToCart),
+        body: {
+          "user_id": currentOnlineUser.user.user_id.toString(),
+          "item_id": widget.itemInfo!.item_id.toString(),
+          "quantity": itemDetailsController.quantity.toString(),
+          "color": widget.itemInfo!.colors![itemDetailsController.color],
+          "size": widget.itemInfo!.sizes![itemDetailsController.size],
+        },
+      );
+      if (res.statusCode ==
+          200) //from flutter app the connection with api to server - success
+      {
+        var resBodOfAddCart = jsonDecode(res.body);
+        if (resBodOfAddCart['success'] == true) {
+          Fluttertoast.showToast(msg: "Item added to cart");
+        } else {
+          Fluttertoast.showToast(msg: "Item failed add to cart.");
+        }
+      }
+    } catch (errorMsg) {
+      print("Error :: " + errorMsg.toString());
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -186,10 +226,199 @@ class _ItemDetailsScreenState extends State<ItemDetailsScreen> {
                     ],
                   ),
                 ),
+
+                Obx(
+                  () => Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      IconButton(
+                        onPressed: () {
+                          itemDetailsController.setQuantityItem(
+                              itemDetailsController.quantity + 1);
+                        },
+                        icon: const Icon(
+                          Icons.add_circle_outline,
+                          color: Colors.white,
+                        ),
+                      ),
+                      Text(
+                        itemDetailsController.quantity.toString(),
+                        style: const TextStyle(
+                          fontSize: 20,
+                          color: Colors.purpleAccent,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      IconButton(
+                        onPressed: () {
+                          if (itemDetailsController.quantity - 1 >= 1) {
+                            itemDetailsController.setQuantityItem(
+                                itemDetailsController.quantity - 1);
+                          } else {
+                            Fluttertoast.showToast(
+                                msg: "Quantity must be 1 or more than 1");
+                          }
+                        },
+                        icon: const Icon(
+                          Icons.remove_circle_outline,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
               ],
             ),
 
             //size
+            const Text(
+              "Size: ",
+              style: TextStyle(
+                fontSize: 18,
+                color: Colors.purpleAccent,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+
+            const SizedBox(height: 8),
+
+            Wrap(
+              runSpacing: 8,
+              spacing: 8,
+              children: List.generate(widget.itemInfo!.sizes!.length, (index) {
+                return Obx(
+                  () => GestureDetector(
+                    onTap: () {
+                      itemDetailsController.setSizeItem(index);
+                    },
+                    child: Container(
+                      height: 35,
+                      width: 60,
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                          width: 2,
+                          color: itemDetailsController.size == index
+                              ? Colors.transparent
+                              : Colors.grey,
+                        ),
+                        color: itemDetailsController.size == index
+                            ? Colors.purpleAccent.withOpacity(0.4)
+                            : Colors.black,
+                      ),
+                      alignment: Alignment.center,
+                      child: Text(
+                        widget.itemInfo!.sizes![index]
+                            .replaceAll("[", "")
+                            .replaceAll("]", ""),
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: Colors.grey[700],
+                        ),
+                      ),
+                    ),
+                  ),
+                );
+              }),
+            ),
+
+            const SizedBox(height: 8),
+
+            //colors
+            const Text(
+              "Color: ",
+              style: TextStyle(
+                fontSize: 18,
+                color: Colors.purpleAccent,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+
+            const SizedBox(height: 8),
+
+            Wrap(
+              runSpacing: 8,
+              spacing: 8,
+              children: List.generate(
+                widget.itemInfo!.colors!.length,
+                (index) {
+                  return Obx(
+                    () => GestureDetector(
+                      onTap: () {
+                        itemDetailsController.setColorItem(index);
+                      },
+                      child: Container(
+                        height: 35,
+                        width: 60,
+                        decoration: BoxDecoration(
+                          border: Border.all(
+                            width: 2,
+                            color: itemDetailsController.color == index
+                                ? Colors.transparent
+                                : Colors.grey,
+                          ),
+                          color: itemDetailsController.color == index
+                              ? Colors.purpleAccent.withOpacity(0.4)
+                              : Colors.black,
+                        ),
+                        alignment: Alignment.center,
+                        child: Text(
+                          widget.itemInfo!.colors![index]
+                              .replaceAll("[", "")
+                              .replaceAll("]", ""),
+                          style: TextStyle(
+                            fontSize: 16,
+                            color: Colors.grey[700],
+                          ),
+                        ),
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ),
+
+            const SizedBox(height: 8),
+
+            //description
+            const Text(
+              "Desciption:",
+              style: TextStyle(
+                fontSize: 18,
+                color: Colors.purpleAccent,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(height: 8),
+
+            Text(
+              widget.itemInfo!.description!,
+              textAlign: TextAlign.justify,
+              style: const TextStyle(
+                color: Colors.grey,
+              ),
+            ),
+
+            const SizedBox(height: 30),
+
+            //add to cart button
+            Material(
+              elevation: 4,
+              color: Colors.purpleAccent,
+              borderRadius: BorderRadius.circular(10),
+              child: InkWell(
+                onTap: () {
+                  addItemToCart();
+                },
+                borderRadius: BorderRadius.circular(10),
+                child: Container(
+                  alignment: Alignment.center,
+                  height: 50,
+                  child: Text(
+                    "Add to Cart",
+                  ),
+                ),
+              ),
+            )
           ],
         ),
       ),
