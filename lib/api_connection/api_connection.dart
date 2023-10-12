@@ -24,4 +24,5 @@ class API {
 
   //cart
   static const addToCart = "$hostCart/add.php";
+  static const getCartList = "$hostCart/read.php";
 }

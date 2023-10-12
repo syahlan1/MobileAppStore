@@ -1,4 +1,4 @@
-#Wed Oct 11 13:27:44 WIB 2023
+#Thu Oct 12 11:19:47 WIB 2023
 base.0=E\:\\belajar flutter\\store_app\\build\\app\\intermediates\\dex\\debug\\mergeDexDebug\\classes.dex
 path.0=classes.dex
 renamed.0=classes.dex
