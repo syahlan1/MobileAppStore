@@ -108,7 +108,11 @@ class _CartListScreenState extends State<CartListScreen> {
                           init: CartListController(),
                           builder: (c) {
                             return IconButton(
-                                onPressed: () {},
+                                onPressed: () {
+                                  cartListController
+                                      .addSelectedItem(cartModel.item_id!);
+                                  calculateTotalAmount();
+                                },
                                 icon: Icon(
                                   cartListController.selectedItemList
                                           .contains(cartModel.item_id)
@@ -285,6 +289,78 @@ class _CartListScreenState extends State<CartListScreen> {
             : Center(
                 child: Text("Cart is empty"),
               ),
+      ),
+      bottomNavigationBar: GetBuilder(
+        init: CartListController(),
+        builder: (c) {
+          return Container(
+            decoration: const BoxDecoration(
+              boxShadow: [
+                BoxShadow(
+                  offset: Offset(0, -3),
+                  color: Colors.white24,
+                  blurRadius: 6,
+                ),
+              ],
+            ),
+            padding: const EdgeInsets.symmetric(
+              horizontal: 16,
+              vertical: 8,
+            ),
+            child: Row(
+              children: [
+                //total amount
+                const Text(
+                  "Total Amount",
+                  style: TextStyle(
+                    color: Colors.white38,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+
+                const SizedBox(width: 4),
+
+                Obx(
+                  () => Text(
+                    "Rp.${cartListController.total.toStringAsFixed(2)}", //44.4323
+                    maxLines: 1,
+                    style: const TextStyle(
+                      color: Colors.white70,
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+
+                const Spacer(),
+
+                //order now button
+                Material(
+                  color: cartListController.selectedItemList.length > 0
+                      ? Colors.purpleAccent
+                      : Colors.white24,
+                  borderRadius: BorderRadius.circular(30),
+                  child: InkWell(
+                    onTap: () {},
+                    child: const Padding(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 20,
+                        vertical: 8,
+                      ),
+                      child: Text(
+                        "Order Now",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 14,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          );
+        },
       ),
     );
   }
