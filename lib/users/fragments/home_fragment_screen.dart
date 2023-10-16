@@ -10,9 +10,14 @@ import 'package:store_app/api_connection/api_connection.dart';
 import 'package:store_app/users/cart/cart_list_screen.dart';
 import 'package:store_app/users/item/item_details_screen.dart';
 import 'package:store_app/users/model/clothes.dart';
+import 'package:intl/intl.dart';
 
 class HomeFragmentScreen extends StatelessWidget {
   TextEditingController searchController = TextEditingController();
+  NumberFormat formatter = NumberFormat.currency(
+    locale: 'id',
+    symbol: 'Rp',
+  );
 
   Future<List<Clothes>> getTrendingClothItems() async {
     List<Clothes> trendingClothItemsList = [];
@@ -267,7 +272,9 @@ class HomeFragmentScreen extends StatelessWidget {
                                     width: 10,
                                   ),
                                   Text(
-                                    eachClothItemData.price.toString(),
+                                    (formatter
+                                        .format(eachClothItemData.price)
+                                        .replaceAll(",00", "")),
                                     style: const TextStyle(
                                       color: Colors.purpleAccent,
                                       fontSize: 18,
@@ -410,10 +417,9 @@ class HomeFragmentScreen extends StatelessWidget {
                                       padding: const EdgeInsets.only(
                                           left: 12, right: 12),
                                       child: Text(
-                                        "Rp." +
-                                            eachClothItemRecord.price
-                                                .toString()
-                                                .replaceAll(".0", ""),
+                                        formatter
+                                            .format(eachClothItemRecord.price)
+                                            .replaceAll(",00", ""),
                                         maxLines: 2,
                                         overflow: TextOverflow.ellipsis,
                                         style: const TextStyle(
