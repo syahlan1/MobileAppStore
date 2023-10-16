@@ -9,6 +9,7 @@ import 'package:store_app/users/controllers/cart_list_controller.dart';
 import 'package:store_app/users/model/cart.dart';
 import 'package:store_app/users/model/clothes.dart';
 import 'package:store_app/users/userPreferences/current_user.dart';
+import 'package:intl/intl.dart';
 
 class CartListScreen extends StatefulWidget {
   @override
@@ -18,6 +19,10 @@ class CartListScreen extends StatefulWidget {
 class _CartListScreenState extends State<CartListScreen> {
   final currentOnlineUser = Get.put(CurrentUser());
   final cartListController = Get.put(CartListController());
+  NumberFormat formatter = NumberFormat.currency(
+    locale: 'id',
+    symbol: 'Rp',
+  );
 
   getCurrentUserCartList() async {
     List<Cart> cartListOfCurrentUser = [];
@@ -37,7 +42,7 @@ class _CartListScreenState extends State<CartListScreen> {
                 .add(Cart.fromJson(eachCurrentUserCartItemData));
           });
         } else {
-          Fluttertoast.showToast(msg: "Error Occurred while executing query");
+          Fluttertoast.showToast(msg: "Your cart list is empty");
         }
 
         cartListController.setList(cartListOfCurrentUser);
@@ -55,7 +60,7 @@ class _CartListScreenState extends State<CartListScreen> {
 
     if (cartListController.selectedItemList.length > 0) {
       cartListController.cartList.forEach((itemInCart) {
-        if (cartListController.selectedItemList.contains(itemInCart.item_id)) {
+        if (cartListController.selectedItemList.contains(itemInCart.cart_id)) {
           double eachItemTotalAmount = (itemInCart.price!) *
               (double.parse(itemInCart.quantity.toString()));
 
@@ -344,9 +349,10 @@ class _CartListScreenState extends State<CartListScreen> {
                                                 padding: const EdgeInsets.only(
                                                     left: 12, right: 12.0),
                                                 child: Text(
-                                                  "\$" +
-                                                      clothesModel.price
-                                                          .toString(),
+                                                  (formatter
+                                                      .format(
+                                                          clothesModel.price)
+                                                      .replaceAll(",00", "")),
                                                   style: const TextStyle(
                                                     fontSize: 20,
                                                     color: Colors.purpleAccent,
@@ -491,7 +497,9 @@ class _CartListScreenState extends State<CartListScreen> {
                 const SizedBox(width: 4),
                 Obx(
                   () => Text(
-                    "\$ " + cartListController.total.toStringAsFixed(2),
+                    (formatter
+                        .format(cartListController.total)
+                        .replaceAll(",00", "")),
                     maxLines: 1,
                     style: const TextStyle(
                       color: Colors.white70,
