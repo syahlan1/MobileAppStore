@@ -6,6 +6,8 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:store_app/api_connection/api_connection.dart';
 import 'package:http/http.dart' as http;
+import 'package:store_app/users/item/item_details_screen.dart';
+import 'package:store_app/users/model/clothes.dart';
 import 'package:store_app/users/model/favorite.dart';
 import 'package:store_app/users/userPreferences/current_user.dart';
 import 'package:intl/intl.dart';
@@ -111,9 +113,21 @@ class FavoritesFragmentScreen extends StatelessWidget {
               itemBuilder: (context, index) {
                 Favorite eachFavoriteItemRecord = dataSnapShot.data![index];
 
+                Clothes clickedClothItems = Clothes(
+                  item_id: eachFavoriteItemRecord.item_id,
+                  colors: eachFavoriteItemRecord.colors,
+                  image: eachFavoriteItemRecord.image,
+                  name: eachFavoriteItemRecord.name,
+                  price: eachFavoriteItemRecord.price,
+                  rating: eachFavoriteItemRecord.rating,
+                  sizes: eachFavoriteItemRecord.sizes,
+                  description: eachFavoriteItemRecord.description,
+                  tags: eachFavoriteItemRecord.tags,
+                );
+
                 return GestureDetector(
                   onTap: () {
-                    // Get.to(ItemDetailsScreen(itemInfo: eachClothItemRecord));
+                    Get.to(ItemDetailsScreen(itemInfo: clickedClothItems));
                   },
                   child: Container(
                     margin: EdgeInsets.fromLTRB(

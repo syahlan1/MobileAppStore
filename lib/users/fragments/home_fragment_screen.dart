@@ -9,6 +9,7 @@ import 'package:http/http.dart' as http;
 import 'package:store_app/api_connection/api_connection.dart';
 import 'package:store_app/users/cart/cart_list_screen.dart';
 import 'package:store_app/users/item/item_details_screen.dart';
+import 'package:store_app/users/item/search_items.dart';
 import 'package:store_app/users/model/clothes.dart';
 import 'package:intl/intl.dart';
 
@@ -129,7 +130,9 @@ class HomeFragmentScreen extends StatelessWidget {
         controller: searchController,
         decoration: InputDecoration(
           prefixIcon: IconButton(
-            onPressed: () {},
+            onPressed: () {
+              Get.to(SearchItems(typedKeyWords: searchController.text));
+            },
             icon: const Icon(
               Icons.search,
               color: Colors.purpleAccent,

@@ -3,7 +3,7 @@ class API {
   static const hostConnect = "https://mordant-shed.000webhostapp.com/api_store";
   static const hostConnectUser = "$hostConnect/user";
   static const hostConnectAdmin = "$hostConnect/admin";
-  static const hostUploadItem = "$hostConnect/item";
+  static const hostItem = "$hostConnect/item";
   static const hostClothes = "$hostConnect/clothes";
   static const hostCart = "$hostConnect/cart";
   static const hostFavorite = "$hostConnect/favorite";
@@ -16,8 +16,11 @@ class API {
   //login admin
   static const adminLogin = "$hostConnectAdmin/login.php";
 
-  //upload=save new item
-  static const uploadNewItems = "$hostUploadItem/upload.php";
+  //upload-save new item
+  static const uploadNewItems = "$hostItem/upload.php";
+
+  //search-item
+  static const searchItems = "$hostItem/search.php";
 
   //clothes
   static const getTrendingMostPopularClothes = "$hostClothes/trending.php";

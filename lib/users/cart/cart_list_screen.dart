@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:store_app/api_connection/api_connection.dart';
 import 'package:store_app/users/controllers/cart_list_controller.dart';
+import 'package:store_app/users/item/item_details_screen.dart';
 import 'package:store_app/users/model/cart.dart';
 import 'package:store_app/users/model/clothes.dart';
 import 'package:store_app/users/userPreferences/current_user.dart';
@@ -279,7 +280,9 @@ class _CartListScreenState extends State<CartListScreen> {
                         //image
                         Expanded(
                           child: GestureDetector(
-                            onTap: () {},
+                            onTap: () {
+                              Get.to(ItemDetailsScreen(itemInfo: clothesModel));
+                            },
                             child: Container(
                               margin: EdgeInsets.fromLTRB(
                                 0,
