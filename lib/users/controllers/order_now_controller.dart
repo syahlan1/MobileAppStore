@@ -1,0 +1,18 @@
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+
+class OrderNowController extends GetxController {
+  RxString _deliverySystem = "FedEx".obs;
+  RxString _paymentSystem = "Apple Pay".obs;
+
+  String get deliverySys => _deliverySystem.value;
+  String get paymentSys => _paymentSystem.value;
+
+  setDelverySystem(String newDeliverySystem) {
+    _deliverySystem.value = newDeliverySystem;
+  }
+
+  setPaymentSystem(String newPaymentSystem) {
+    _paymentSystem.value = newPaymentSystem;
+  }
+}

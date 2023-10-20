@@ -9,6 +9,7 @@ import 'package:store_app/users/controllers/cart_list_controller.dart';
 import 'package:store_app/users/item/item_details_screen.dart';
 import 'package:store_app/users/model/cart.dart';
 import 'package:store_app/users/model/clothes.dart';
+import 'package:store_app/users/order/order_now_screen.dart';
 import 'package:store_app/users/userPreferences/current_user.dart';
 import 'package:intl/intl.dart';
 
@@ -116,6 +117,33 @@ class _CartListScreenState extends State<CartListScreen> {
 
       Fluttertoast.showToast(msg: "Error: " + errorMessage.toString());
     }
+  }
+
+  List<Map<String, dynamic>> getSelectedCartListItemsInformation() {
+    List<Map<String, dynamic>> getSelectedCartListItemsInformation = [];
+
+    if (cartListController.selectedItemList.length > 0) {
+      cartListController.cartList.forEach((selectedCartListItem) {
+        if (cartListController.selectedItemList
+            .contains(selectedCartListItem.cart_id)) {
+          Map<String, dynamic> itemInformation = {
+            "item_id": selectedCartListItem.item_id,
+            "name": selectedCartListItem.name,
+            "image": selectedCartListItem.image,
+            "color": selectedCartListItem.color,
+            "size": selectedCartListItem.size,
+            "quantity": selectedCartListItem.quantity,
+            "totalAmount":
+                selectedCartListItem.price! * selectedCartListItem.quantity!,
+            "price": selectedCartListItem.price!,
+          };
+
+          getSelectedCartListItemsInformation.add(itemInformation);
+        }
+      });
+    }
+
+    return getSelectedCartListItemsInformation;
   }
 
   @override
@@ -521,7 +549,17 @@ class _CartListScreenState extends State<CartListScreen> {
                       : Colors.white24,
                   borderRadius: BorderRadius.circular(30),
                   child: InkWell(
-                    onTap: () {},
+                    onTap: () {
+                      cartListController.selectedItemList.length > 0
+                          ? Get.to(OrderNowScreen(
+                              selectedCartListItemsInfo:
+                                  getSelectedCartListItemsInformation(),
+                              totalAmount: cartListController.total,
+                              selectedCartIDs:
+                                  cartListController.selectedItemList,
+                            ))
+                          : null;
+                    },
                     child: const Padding(
                       padding: EdgeInsets.symmetric(
                         horizontal: 20,
