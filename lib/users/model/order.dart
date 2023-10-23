@@ -27,6 +27,21 @@ class Order {
     this.phoneNumber,
   });
 
+  factory Order.fromJson(Map<String, dynamic> json) => Order(
+        order_id: int.parse(json["order_id"]),
+        user_id: int.parse(json["user_id"]),
+        selectedItems: json["selectedItems"],
+        deliverySystem: json["deliverySystem"],
+        paymentSystem: json["paymentSystem"],
+        note: json["note"],
+        totalAmount: double.parse(json["totalAmount"]),
+        image: json["image"],
+        status: json["status"],
+        dateTime: DateTime.parse(json["dateTime"]),
+        shipmentAddress: json["shipmentAddress"],
+        phoneNumber: json["phoneNumber"],
+      );
+
   Map<String, dynamic> toJson(String imageSelectedBase64) => {
         "order_id": order_id.toString(),
         "user_id": user_id.toString(),

@@ -82,7 +82,7 @@ class OrderConfirmationScreen extends StatelessWidget {
           DateTime.now().millisecondsSinceEpoch.toString() +
           "-" +
           imageSelectedName,
-      status: "",
+      status: "new",
       dateTime: DateTime.now(),
       shipmentAddress: shipmentAddress,
       phoneNumber: phoneNumber,
