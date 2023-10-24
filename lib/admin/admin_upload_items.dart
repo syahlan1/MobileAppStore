@@ -6,9 +6,11 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_navigation/get_navigation.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:store_app/admin/admin_get_all_orders.dart';
 import 'package:store_app/admin/admin_login.dart';
 import 'package:http/http.dart' as http;
 import 'package:store_app/api_connection/api_connection.dart';
+import 'package:store_app/users/authentication/login_screen.dart';
 
 class AdminUploadItemsScreen extends StatefulWidget {
   @override
@@ -111,8 +113,31 @@ class _AdminUploadItemsScreenState extends State<AdminUploadItemsScreen> {
             ),
           ),
         ),
-        title: Text("Admin"),
-        centerTitle: true,
+        title: GestureDetector(
+          onTap: () {
+            Get.to(AdminGetAllOrdersScreen());
+          },
+          child: Text(
+            "Order List",
+            style: TextStyle(
+              color: Colors.green,
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
+        centerTitle: false,
+        actions: [
+          IconButton(
+            onPressed: () {
+              Get.to(LoginScreen());
+            },
+            icon: Icon(
+              Icons.logout,
+              color: Colors.redAccent,
+            ),
+          ),
+        ],
         automaticallyImplyLeading: false,
       ),
       body: Container(

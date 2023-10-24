@@ -17,6 +17,7 @@ class API {
 
   //login admin
   static const adminLogin = "$hostConnectAdmin/login.php";
+  static const adminGetAllOrders = "$hostConnectAdmin/read_orders.php";
 
   //upload-save new item
   static const uploadNewItems = "$hostItem/upload.php";
