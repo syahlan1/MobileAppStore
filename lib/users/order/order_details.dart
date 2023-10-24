@@ -1,9 +1,11 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:store_app/api_connection/api_connection.dart';
 import 'package:store_app/users/model/order.dart';
+import 'package:http/http.dart' as http;
 
 class OrderDetailsScreen extends StatefulWidget {
   final Order? clickedOrderInfo;
@@ -15,6 +17,83 @@ class OrderDetailsScreen extends StatefulWidget {
 }
 
 class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
+  RxString _status = "new".obs;
+  String get status => _status.value;
+
+  updateParcelStatusForUI(String parcelReceived) {
+    _status.value = parcelReceived;
+  }
+
+  showDialogForParcelConfirmation() async {
+    if (widget.clickedOrderInfo!.status == "new") {
+      var response = await Get.dialog(
+        AlertDialog(
+          backgroundColor: Colors.black,
+          title: Text(
+            "Confirmation",
+            style: TextStyle(
+              color: Colors.grey,
+            ),
+          ),
+          content: Text(
+            "Have you received parcel?",
+            style: TextStyle(
+              color: Colors.grey,
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Get.back();
+              },
+              child: Text(
+                "No",
+                style: TextStyle(color: Colors.redAccent),
+              ),
+            ),
+            TextButton(
+              onPressed: () {
+                Get.back(result: "yesConfirmed");
+              },
+              child: Text(
+                "Yes",
+                style: TextStyle(color: Colors.green),
+              ),
+            ),
+          ],
+        ),
+      );
+
+      if (response == "yesConfirmed") {
+        updateStatusValueInDatabase();
+      }
+    }
+  }
+
+  updateStatusValueInDatabase() async {
+    try {
+      var response = await http.post(Uri.parse(API.updateStatus), body: {
+        "order_id": widget.clickedOrderInfo!.order_id.toString(),
+      });
+
+      if (response.statusCode == 200) {
+        var responseBodyOfUpdateStatus = jsonDecode(response.body);
+        if (responseBodyOfUpdateStatus["success"] == true) {
+          updateParcelStatusForUI("arrived");
+        }
+      }
+    } catch (e) {
+      print(e.toString());
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    updateParcelStatusForUI(widget.clickedOrderInfo!.status.toString());
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -26,6 +105,49 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
               .format(widget.clickedOrderInfo!.dateTime!),
           style: TextStyle(fontSize: 14),
         ),
+        actions: [
+          Padding(
+            padding: EdgeInsets.fromLTRB(8, 8, 16, 8),
+            child: Material(
+              color: Colors.white30,
+              borderRadius: BorderRadius.circular(10),
+              child: InkWell(
+                onTap: () {
+                  if (status == "new") {
+                    showDialogForParcelConfirmation();
+                  }
+                },
+                borderRadius: BorderRadius.circular(30),
+                child: Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                  child: Row(
+                    children: [
+                      Text(
+                        "Received",
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
+                      ),
+                      const SizedBox(
+                        width: 8,
+                      ),
+                      Obx(
+                        () => status == "new"
+                            ? Icon(Icons.help_outline, color: Colors.redAccent)
+                            : Icon(
+                                Icons.check_circle_outline,
+                                color: Colors.greenAccent,
+                              ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
       body: SingleChildScrollView(
         child: Padding(
