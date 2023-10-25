@@ -7,6 +7,7 @@ import 'package:get/get.dart';
 import 'package:store_app/api_connection/api_connection.dart';
 import 'package:store_app/users/model/order.dart';
 import 'package:http/http.dart' as http;
+import 'package:store_app/users/order/history_screen.dart';
 import 'package:store_app/users/order/order_details.dart';
 import 'package:store_app/users/userPreferences/current_user.dart';
 import 'package:intl/intl.dart';
@@ -80,6 +81,7 @@ class OrderFragmentScreen extends StatelessWidget {
                 GestureDetector(
                   onTap: () {
                     //send user to orders history screen
+                    Get.to(HistoryScreen());
                   },
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
