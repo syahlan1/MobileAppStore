@@ -91,7 +91,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xff192a56),
+      backgroundColor: Color(0xffffffff),
       body: LayoutBuilder(builder: (context, cons) {
         return ConstrainedBox(
           constraints: BoxConstraints(
@@ -101,62 +101,189 @@ class _SignUpScreenState extends State<SignUpScreen> {
             child: Column(
               children: [
                 //SignUp screen header
-                SizedBox(
-                  width: MediaQuery.of(context).size.width,
-                  height: 285,
-                  child: Image.asset("images/register.png"),
+                Stack(
+                  children: [
+                    Container(
+                      child: SizedBox(
+                        width: MediaQuery.of(context).size.width,
+                        height: 285,
+                        child: Image.asset("images/bannersignup.png"),
+                      ),
+                    ),
+                    Container(
+                      padding: EdgeInsets.fromLTRB(40, 95, 0, 0),
+                      child: Column(
+                        children: [
+                          Text(
+                            "Hello,",
+                            style: TextStyle(
+                              fontSize: 25,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Container(
+                      padding: EdgeInsets.fromLTRB(40, 125, 0, 0),
+                      child: Column(
+                        children: [
+                          Text(
+                            "Sign Up",
+                            style: TextStyle(
+                              fontSize: 45,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
 
                 //SignUp screen header
                 Padding(
                   padding: const EdgeInsets.all(16.0),
-                  child: Container(
-                    decoration: const BoxDecoration(
-                      color: Color(0xff273c75),
-                      borderRadius: BorderRadius.all(
-                        Radius.circular(60),
-                      ),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.fromLTRB(30, 30, 30, 8),
-                      child: Column(
-                        children: [
-                          //email-password-SignUp btn
-                          Form(
-                            key: formKey,
-                            child: Column(
-                              children: [
-                                //name
-                                TextFormField(
-                                  controller: nameController,
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(30, 30, 30, 8),
+                    child: Column(
+                      children: [
+                        //email-password-SignUp btn
+                        Form(
+                          key: formKey,
+                          child: Column(
+                            children: [
+                              //name
+                              TextFormField(
+                                controller: nameController,
+                                validator: (val) => val == ""
+                                    ? "Mohon Masukkan Nama Anda"
+                                    : null,
+                                decoration: InputDecoration(
+                                  prefixIcon: Icon(
+                                    Icons.person,
+                                    color: Colors.grey,
+                                  ),
+                                  hintText: "name...",
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(30),
+                                    borderSide: BorderSide(color: Colors.grey),
+                                  ),
+                                  enabledBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(30),
+                                    borderSide: BorderSide(color: Colors.grey),
+                                  ),
+                                  focusedBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(30),
+                                    borderSide: BorderSide(
+                                      color: Color(0xff575fcf),
+                                    ),
+                                  ),
+                                  disabledBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(30),
+                                    borderSide: BorderSide(color: Colors.grey),
+                                  ),
+                                  contentPadding: const EdgeInsets.symmetric(
+                                    horizontal: 14,
+                                    vertical: 6,
+                                  ),
+                                  fillColor: Colors.white,
+                                  filled: true,
+                                ),
+                              ),
+                              SizedBox(
+                                height: 18,
+                              ),
+
+                              //email
+                              TextFormField(
+                                controller: emailController,
+                                validator: (val) =>
+                                    val == "" ? "Mohon Masukkan Email" : null,
+                                decoration: InputDecoration(
+                                  prefixIcon: Icon(
+                                    Icons.email,
+                                    color: Colors.grey,
+                                  ),
+                                  hintText: "email...",
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(30),
+                                    borderSide: BorderSide(color: Colors.grey),
+                                  ),
+                                  enabledBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(30),
+                                    borderSide: BorderSide(color: Colors.grey),
+                                  ),
+                                  focusedBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(30),
+                                    borderSide: BorderSide(
+                                      color: Color(0xff575fcf),
+                                    ),
+                                  ),
+                                  disabledBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(30),
+                                    borderSide: BorderSide(color: Colors.grey),
+                                  ),
+                                  contentPadding: const EdgeInsets.symmetric(
+                                    horizontal: 14,
+                                    vertical: 6,
+                                  ),
+                                  fillColor: Colors.white,
+                                  filled: true,
+                                ),
+                              ),
+
+                              SizedBox(
+                                height: 18,
+                              ),
+
+                              //password
+                              Obx(
+                                () => TextFormField(
+                                  controller: passwordController,
+                                  obscureText: isObsecure.value,
                                   validator: (val) => val == ""
-                                      ? "Mohon Masukkan Nama Anda"
+                                      ? "Mohon Masukkan Password"
                                       : null,
                                   decoration: InputDecoration(
                                     prefixIcon: Icon(
-                                      Icons.person,
+                                      Icons.vpn_key_sharp,
                                       color: Colors.grey,
                                     ),
-                                    hintText: "name...",
+                                    suffixIcon: Obx(
+                                      () => GestureDetector(
+                                        onTap: () {
+                                          isObsecure.value = !isObsecure.value;
+                                        },
+                                        child: Icon(
+                                          isObsecure.value
+                                              ? Icons.visibility_off
+                                              : Icons.visibility,
+                                          color: Colors.grey,
+                                        ),
+                                      ),
+                                    ),
+                                    hintText: "password...",
                                     border: OutlineInputBorder(
                                       borderRadius: BorderRadius.circular(30),
                                       borderSide:
-                                          BorderSide(color: Colors.white60),
+                                          BorderSide(color: Colors.grey),
                                     ),
                                     enabledBorder: OutlineInputBorder(
                                       borderRadius: BorderRadius.circular(30),
                                       borderSide:
-                                          BorderSide(color: Colors.white60),
+                                          BorderSide(color: Colors.grey),
                                     ),
                                     focusedBorder: OutlineInputBorder(
                                       borderRadius: BorderRadius.circular(30),
-                                      borderSide:
-                                          BorderSide(color: Colors.white60),
+                                      borderSide: BorderSide(
+                                        color: Color(0xff575fcf),
+                                      ),
                                     ),
                                     disabledBorder: OutlineInputBorder(
                                       borderRadius: BorderRadius.circular(30),
                                       borderSide:
-                                          BorderSide(color: Colors.white60),
+                                          BorderSide(color: Colors.grey),
                                     ),
                                     contentPadding: const EdgeInsets.symmetric(
                                       horizontal: 14,
@@ -166,171 +293,65 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                     filled: true,
                                   ),
                                 ),
-                                SizedBox(
-                                  height: 18,
-                                ),
-
-                                //email
-                                TextFormField(
-                                  controller: emailController,
-                                  validator: (val) =>
-                                      val == "" ? "Mohon Masukkan Email" : null,
-                                  decoration: InputDecoration(
-                                    prefixIcon: Icon(
-                                      Icons.email,
-                                      color: Colors.grey,
-                                    ),
-                                    hintText: "email...",
-                                    border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(30),
-                                      borderSide:
-                                          BorderSide(color: Colors.white60),
-                                    ),
-                                    enabledBorder: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(30),
-                                      borderSide:
-                                          BorderSide(color: Colors.white60),
-                                    ),
-                                    focusedBorder: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(30),
-                                      borderSide:
-                                          BorderSide(color: Colors.white60),
-                                    ),
-                                    disabledBorder: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(30),
-                                      borderSide:
-                                          BorderSide(color: Colors.white60),
-                                    ),
-                                    contentPadding: const EdgeInsets.symmetric(
-                                      horizontal: 14,
-                                      vertical: 6,
-                                    ),
-                                    fillColor: Colors.white,
-                                    filled: true,
-                                  ),
-                                ),
-
-                                SizedBox(
-                                  height: 18,
-                                ),
-
-                                //password
-                                Obx(
-                                  () => TextFormField(
-                                    controller: passwordController,
-                                    obscureText: isObsecure.value,
-                                    validator: (val) => val == ""
-                                        ? "Mohon Masukkan Password"
-                                        : null,
-                                    decoration: InputDecoration(
-                                      prefixIcon: Icon(
-                                        Icons.vpn_key_sharp,
-                                        color: Colors.grey,
-                                      ),
-                                      suffixIcon: Obx(
-                                        () => GestureDetector(
-                                          onTap: () {
-                                            isObsecure.value =
-                                                !isObsecure.value;
-                                          },
-                                          child: Icon(
-                                            isObsecure.value
-                                                ? Icons.visibility_off
-                                                : Icons.visibility,
-                                            color: Colors.grey,
-                                          ),
-                                        ),
-                                      ),
-                                      hintText: "password...",
-                                      border: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(30),
-                                        borderSide:
-                                            BorderSide(color: Colors.white60),
-                                      ),
-                                      enabledBorder: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(30),
-                                        borderSide:
-                                            BorderSide(color: Colors.white60),
-                                      ),
-                                      focusedBorder: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(30),
-                                        borderSide:
-                                            BorderSide(color: Colors.white60),
-                                      ),
-                                      disabledBorder: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(30),
-                                        borderSide:
-                                            BorderSide(color: Colors.white60),
-                                      ),
-                                      contentPadding:
-                                          const EdgeInsets.symmetric(
-                                        horizontal: 14,
-                                        vertical: 6,
-                                      ),
-                                      fillColor: Colors.white,
-                                      filled: true,
-                                    ),
-                                  ),
-                                ),
-
-                                const SizedBox(
-                                  height: 18,
-                                ),
-
-                                //button
-                                Material(
-                                  color: Color(0xff9c88ff),
-                                  borderRadius: BorderRadius.circular(30),
-                                  child: InkWell(
-                                    onTap: () {
-                                      if (formKey.currentState!.validate()) {
-                                        //validate the email
-                                        validateUserEmail();
-                                      }
-                                    },
-                                    borderRadius: BorderRadius.circular(30),
-                                    child: const Padding(
-                                      padding: EdgeInsets.symmetric(
-                                          vertical: 10, horizontal: 28),
-                                      child: Text(
-                                        "SignUp",
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 16,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-
-                          SizedBox(
-                            height: 16,
-                          ),
-
-                          //already have account button
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              const Text(
-                                "Already have an Account?",
-                                style: TextStyle(color: Color(0xff7f8fa6)),
                               ),
-                              TextButton(
-                                onPressed: () {
-                                  Get.to(LoginScreen());
-                                },
-                                child: const Text(
-                                  "Login Here",
-                                  style: TextStyle(color: Color(0xff9c88ff)),
+
+                              const SizedBox(
+                                height: 18,
+                              ),
+
+                              //button
+                              Material(
+                                color: Color(0xff575fcf),
+                                borderRadius: BorderRadius.circular(30),
+                                child: InkWell(
+                                  onTap: () {
+                                    if (formKey.currentState!.validate()) {
+                                      //validate the email
+                                      validateUserEmail();
+                                    }
+                                  },
+                                  borderRadius: BorderRadius.circular(30),
+                                  child: const Padding(
+                                    padding: EdgeInsets.symmetric(
+                                        vertical: 10, horizontal: 28),
+                                    child: Text(
+                                      "SignUp",
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 16,
+                                      ),
+                                    ),
+                                  ),
                                 ),
                               ),
                             ],
                           ),
-                        ],
-                      ),
+                        ),
+
+                        SizedBox(
+                          height: 16,
+                        ),
+
+                        //already have account button
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const Text(
+                              "Sudah punya akun?",
+                              style: TextStyle(color: Color(0xff7f8fa6)),
+                            ),
+                            TextButton(
+                              onPressed: () {
+                                Get.to(LoginScreen());
+                              },
+                              child: const Text(
+                                "Login sini",
+                                style: TextStyle(color: Color(0xff9c88ff)),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
                     ),
                   ),
                 ),
