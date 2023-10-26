@@ -52,29 +52,35 @@ class DashboardOfFragments extends StatelessWidget {
       },
       builder: ((controller) {
         return Scaffold(
-          backgroundColor: Color(0xff2c3e50),
+          backgroundColor: Color(0xfff1f2f6),
           body: SafeArea(
             child: Obx(() => _fragmentScreens[_indexNumber.value]),
           ),
           bottomNavigationBar: Obx(
-            () => BottomNavigationBar(
-              currentIndex: _indexNumber.value,
-              onTap: (value) {
-                _indexNumber.value = value;
-              },
-              showSelectedLabels: true,
-              showUnselectedLabels: true,
-              selectedItemColor: Color(0xff9c88ff),
-              unselectedItemColor: Color(0xffa4b0be),
-              items: List.generate(4, (index) {
-                var navBtnProperty = _navigationButtonsProperties[index];
-                return BottomNavigationBarItem(
-                  backgroundColor: Color(0xff192a56),
-                  icon: Icon(navBtnProperty["non_active_icon"]),
-                  activeIcon: Icon(navBtnProperty["active_icon"]),
-                  label: navBtnProperty["label"],
-                );
-              }),
+            () => ClipRRect(
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(20),
+                topRight: Radius.circular(20),
+              ),
+              child: BottomNavigationBar(
+                currentIndex: _indexNumber.value,
+                onTap: (value) {
+                  _indexNumber.value = value;
+                },
+                showSelectedLabels: true,
+                showUnselectedLabels: true,
+                selectedItemColor: Color(0xfff6b93b),
+                unselectedItemColor: Colors.white,
+                items: List.generate(4, (index) {
+                  var navBtnProperty = _navigationButtonsProperties[index];
+                  return BottomNavigationBarItem(
+                    backgroundColor: Color(0xff575fcf),
+                    icon: Icon(navBtnProperty["non_active_icon"]),
+                    activeIcon: Icon(navBtnProperty["active_icon"]),
+                    label: navBtnProperty["label"],
+                  );
+                }),
+              ),
             ),
           ),
         );

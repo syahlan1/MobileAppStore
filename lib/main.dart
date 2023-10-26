@@ -17,7 +17,7 @@ class MyApp extends StatelessWidget {
       title: 'Clothes App',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        primarySwatch: Colors.purple,
+        primarySwatch: Colors.grey,
       ),
       home: FutureBuilder(
         future: RememberUserPrefs.readUserInfo(),
