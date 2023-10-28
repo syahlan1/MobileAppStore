@@ -109,7 +109,6 @@ class ProfileFragmentScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Color(0xff273c75),
       child: ListView(
         padding: EdgeInsets.all(32),
         children: [

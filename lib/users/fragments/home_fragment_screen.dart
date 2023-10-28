@@ -70,61 +70,79 @@ class HomeFragmentScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const SizedBox(
-            height: 16,
-          ),
-
-          //search bar widget
-          showSearchBarWidget(),
-
-          const SizedBox(
-            height: 24,
-          ),
-
-          //trending-popular items
-          const Padding(
-            padding: EdgeInsets.symmetric(horizontal: 18),
-            child: Text(
-              "Trending",
-              style: TextStyle(
+    return Scaffold(
+      appBar: PreferredSize(
+        preferredSize: Size.fromHeight(70),
+        child: AppBar(
+          title: showSearchBarWidget(),
+          backgroundColor: Colors.transparent,
+          elevation: 0.0,
+          actions: [
+            IconButton(
+              onPressed: () {
+                Get.to(CartListScreen());
+              },
+              icon: const Icon(
+                Icons.shopping_cart,
                 color: Color(0xff2f3542),
-                fontWeight: FontWeight.bold,
-                fontSize: 24,
               ),
             ),
-          ),
-          trendingMostPopularClothItemWidget(context),
+          ],
+        ),
+      ),
+      body: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const SizedBox(
+              height: 16,
+            ),
 
-          const SizedBox(
-            height: 20,
-          ),
+            const SizedBox(
+              height: 24,
+            ),
 
-          //all new collections/items
-          const Padding(
-            padding: EdgeInsets.symmetric(horizontal: 18),
-            child: Text(
-              "New Collections",
-              style: TextStyle(
-                color: Color(0xff2f3542),
-                fontWeight: FontWeight.bold,
-                fontSize: 24,
+            //trending-popular items
+            const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 18),
+              child: Text(
+                "Trending",
+                style: TextStyle(
+                  color: Color(0xff2f3542),
+                  fontWeight: FontWeight.bold,
+                  fontSize: 24,
+                ),
               ),
             ),
-          ),
+            trendingMostPopularClothItemWidget(context),
 
-          allItemWidget(context),
-        ],
+            const SizedBox(
+              height: 20,
+            ),
+
+            //all new collections/items
+            const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 18),
+              child: Text(
+                "New Collections",
+                style: TextStyle(
+                  color: Color(0xff2f3542),
+                  fontWeight: FontWeight.bold,
+                  fontSize: 24,
+                ),
+              ),
+            ),
+
+            allItemWidget(context),
+          ],
+        ),
       ),
     );
   }
 
   Widget showSearchBarWidget() {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 18),
+      padding: const EdgeInsets.fromLTRB(2, 20, 2, 15),
       child: TextField(
         style: const TextStyle(color: Colors.black),
         controller: searchController,
@@ -144,15 +162,6 @@ class HomeFragmentScreen extends StatelessWidget {
           hintStyle: const TextStyle(
             color: Colors.grey,
             fontSize: 14,
-          ),
-          suffixIcon: IconButton(
-            onPressed: () {
-              Get.to(CartListScreen());
-            },
-            icon: const Icon(
-              Icons.shopping_cart,
-              color: Color(0xff2f3542),
-            ),
           ),
           enabledBorder: const OutlineInputBorder(
             borderSide: BorderSide(
@@ -311,7 +320,7 @@ class HomeFragmentScreen extends StatelessWidget {
                                       .format(eachClothItemData.price)
                                       .replaceAll(",00", "")),
                                   style: const TextStyle(
-                                    color: Colors.black,
+                                    color: Color(0xff575fcf),
                                     fontSize: 16,
                                   ),
                                 ),
@@ -371,10 +380,10 @@ class HomeFragmentScreen extends StatelessWidget {
                   color: Colors.white,
                   elevation: 0.0,
                   margin: EdgeInsets.fromLTRB(
-                    index == 0 ? 8 : 4,
-                    5,
-                    index == dataSnapShot.data!.length - 1 ? 8 : 4,
-                    5,
+                    index == 0 ? 16 : 8,
+                    10,
+                    index == dataSnapShot.data!.length - 1 ? 16 : 8,
+                    10,
                   ),
                   child: InkWell(
                     borderRadius: BorderRadius.circular(10),

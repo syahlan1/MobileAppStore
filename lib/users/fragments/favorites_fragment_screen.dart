@@ -6,14 +6,22 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:store_app/api_connection/api_connection.dart';
 import 'package:http/http.dart' as http;
+import 'package:store_app/users/cart/cart_list_screen.dart';
 import 'package:store_app/users/item/item_details_screen.dart';
 import 'package:store_app/users/model/clothes.dart';
 import 'package:store_app/users/model/favorite.dart';
 import 'package:store_app/users/userPreferences/current_user.dart';
 import 'package:intl/intl.dart';
 
-class FavoritesFragmentScreen extends StatelessWidget {
+class FavoritesFragmentScreen extends StatefulWidget {
+  @override
+  State<FavoritesFragmentScreen> createState() =>
+      _FavoritesFragmentScreenState();
+}
+
+class _FavoritesFragmentScreenState extends State<FavoritesFragmentScreen> {
   final currentOnlineUser = Get.put(CurrentUser());
+
   NumberFormat formatter = NumberFormat.currency(
     locale: 'id',
     symbol: 'Rp',
@@ -50,37 +58,38 @@ class FavoritesFragmentScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Padding(
-            padding: EdgeInsets.fromLTRB(16, 24, 8, 8),
-            child: Text(
-              "My Favorite List :",
-              style: TextStyle(
-                color: Colors.purpleAccent,
-                fontSize: 30,
-                fontWeight: FontWeight.bold,
-              ),
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(
+          'Favorites',
+          style: TextStyle(
+            fontSize: 24,
+          ),
+        ),
+        actions: [
+          IconButton(
+            onPressed: () {
+              Get.to(CartListScreen());
+            },
+            icon: const Icon(
+              Icons.shopping_cart,
+              color: Color(0xff2f3542),
             ),
           ),
-          const Padding(
-            padding: EdgeInsets.fromLTRB(16, 24, 8, 8),
-            child: Text(
-              "Order these best clothes for yourself now",
-              style: TextStyle(
-                color: Colors.grey,
-                fontSize: 16,
-                fontWeight: FontWeight.w300,
-              ),
-            ),
-          ),
-          const SizedBox(height: 24),
-
-          //displaying favorite list
-          favoriteListDesignWidget(context),
         ],
+        backgroundColor: Colors.transparent,
+        elevation: 0.0,
+      ),
+      body: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const SizedBox(height: 25),
+
+            //displaying favorite list
+            favoriteListDesignWidget(context),
+          ],
+        ),
       ),
     );
   }
@@ -105,11 +114,15 @@ class FavoritesFragmentScreen extends StatelessWidget {
             );
           }
           if (dataSnapShot.data!.length > 0) {
-            return ListView.builder(
+            return GridView.builder(
+              scrollDirection: Axis.vertical,
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                childAspectRatio: 0.64,
+              ),
               itemCount: dataSnapShot.data!.length,
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
-              scrollDirection: Axis.vertical,
               itemBuilder: (context, index) {
                 Favorite eachFavoriteItemRecord = dataSnapShot.data![index];
 
@@ -125,133 +138,153 @@ class FavoritesFragmentScreen extends StatelessWidget {
                   tags: eachFavoriteItemRecord.tags,
                 );
 
-                return GestureDetector(
-                  onTap: () {
-                    Get.to(ItemDetailsScreen(itemInfo: clickedClothItems));
-                  },
-                  child: Container(
-                    margin: EdgeInsets.fromLTRB(
-                      16,
-                      index == 0 ? 16 : 8,
-                      16,
-                      index == dataSnapShot.data!.length - 1 ? 16 : 8,
-                    ),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(20),
-                      color: Colors.black,
-                      boxShadow: const [
-                        BoxShadow(
-                          offset: Offset(0, 0),
-                          blurRadius: 6,
-                          color: Colors.white,
-                        ),
-                      ],
-                    ),
-                    child: Row(
-                      children: [
-                        //name + price
-                        //tags
-                        Expanded(
-                          child: Padding(
-                            padding: const EdgeInsets.only(left: 15),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                //name and price
-                                Row(
+                return Card(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  color: Colors.white,
+                  elevation: 0.0,
+                  margin: EdgeInsets.fromLTRB(
+                    index == 0 ? 8 : 4,
+                    5,
+                    index == dataSnapShot.data!.length - 1 ? 8 : 4,
+                    5,
+                  ),
+                  child: InkWell(
+                    borderRadius: BorderRadius.circular(10),
+                    onTap: () {
+                      Get.to(ItemDetailsScreen(itemInfo: clickedClothItems));
+                    },
+                    child: Container(
+                      child: Column(
+                        children: [
+                          //image clothes
+                          ClipRRect(
+                            borderRadius: const BorderRadius.only(
+                              topRight: Radius.circular(10),
+                              topLeft: Radius.circular(10),
+                            ),
+                            child: FadeInImage(
+                              height: 150,
+                              width: 185,
+                              fit: BoxFit.cover,
+                              placeholder:
+                                  const AssetImage("images/place_holder.png"),
+                              image: NetworkImage(
+                                eachFavoriteItemRecord.image!,
+                              ),
+                              imageErrorBuilder:
+                                  (context, error, stackTraceError) {
+                                return const Center(
+                                  child: Icon(
+                                    Icons.broken_image_outlined,
+                                  ),
+                                );
+                              },
+                            ),
+                          ),
+
+                          //name + price
+                          //tags
+                          Expanded(
+                            child: Container(
+                              width: 180,
+                              child: Padding(
+                                padding:
+                                    const EdgeInsets.fromLTRB(10, 10, 10, 0),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    //name
+                                    //name and price
                                     Expanded(
                                       child: Text(
                                         eachFavoriteItemRecord.name!,
                                         maxLines: 2,
                                         overflow: TextOverflow.ellipsis,
                                         style: const TextStyle(
-                                          fontSize: 18,
-                                          color: Colors.grey,
-                                          fontWeight: FontWeight.bold,
+                                          fontSize: 15,
+                                          color: Colors.black,
                                         ),
                                       ),
                                     ),
 
+                                    //tags
+                                    Expanded(
+                                      child: Text(
+                                        "Tags: \n" +
+                                            eachFavoriteItemRecord.tags
+                                                .toString()
+                                                .replaceAll("[", "")
+                                                .replaceAll("]", ""),
+                                        maxLines: 2,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: const TextStyle(
+                                          fontSize: 12,
+                                          color: Colors.grey,
+                                        ),
+                                      ),
+                                    ),
+
+                                    SizedBox(
+                                      height: 20,
+                                    ),
+
                                     //price
-                                    Padding(
-                                      padding: const EdgeInsets.only(
-                                          left: 12, right: 12),
+                                    Expanded(
                                       child: Text(
                                         formatter
                                             .format(
                                                 eachFavoriteItemRecord.price)
                                             .replaceAll(",00", ""),
-                                        maxLines: 2,
                                         overflow: TextOverflow.ellipsis,
                                         style: const TextStyle(
-                                          fontSize: 18,
-                                          color: Colors.purpleAccent,
-                                          fontWeight: FontWeight.bold,
+                                          fontSize: 16,
+                                          color: Color(0xff575fcf),
                                         ),
                                       ),
                                     ),
+
+                                    const SizedBox(
+                                      height: 16,
+                                    ),
                                   ],
                                 ),
-
-                                const SizedBox(
-                                  height: 16,
-                                ),
-
-                                //tags
-                                Text(
-                                  "Tags: \n" +
-                                      eachFavoriteItemRecord.tags
-                                          .toString()
-                                          .replaceAll("[", "")
-                                          .replaceAll("]", ""),
-                                  maxLines: 2,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: const TextStyle(
-                                    fontSize: 12,
-                                    color: Colors.grey,
-                                  ),
-                                ),
-                              ],
+                              ),
                             ),
                           ),
-                        ),
-
-                        //image clothes
-                        ClipRRect(
-                          borderRadius: const BorderRadius.only(
-                            topRight: Radius.circular(20),
-                            bottomRight: Radius.circular(20),
-                          ),
-                          child: FadeInImage(
-                            height: 130,
-                            width: 130,
-                            fit: BoxFit.cover,
-                            placeholder:
-                                const AssetImage("images/place_holder.png"),
-                            image: NetworkImage(
-                              eachFavoriteItemRecord.image!,
-                            ),
-                            imageErrorBuilder:
-                                (context, error, stackTraceError) {
-                              return const Center(
-                                child: Icon(
-                                  Icons.broken_image_outlined,
-                                ),
-                              );
-                            },
-                          ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
                 );
               },
             );
           } else {
-            return const Center(
-              child: Text("Empty, No Data."),
+            return const Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                SizedBox(
+                  height: 100,
+                ),
+                Center(
+                  child: Column(
+                    children: [
+                      Image(
+                        image: AssetImage("images/icon-kardus-trisakti.png"),
+                        width: 130,
+                      ),
+                      SizedBox(height: 10),
+                      Text(
+                        "Menu kosong nih",
+                        style: TextStyle(
+                          color: Color(0xffbdc3c7),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
             );
           }
         });
