@@ -7,7 +7,6 @@ import 'package:get/get.dart';
 import 'package:store_app/api_connection/api_connection.dart';
 import 'package:store_app/users/model/order.dart';
 import 'package:http/http.dart' as http;
-import 'package:store_app/users/order/history_screen.dart';
 import 'package:store_app/users/order/order_details.dart';
 import 'package:store_app/users/userPreferences/current_user.dart';
 import 'package:intl/intl.dart';
@@ -19,6 +18,10 @@ class OrderFragmentScreen extends StatefulWidget {
 
 class _OrderFragmentScreenState extends State<OrderFragmentScreen> {
   final currentOnlineUser = Get.put(CurrentUser());
+  NumberFormat formatter = NumberFormat.currency(
+    locale: 'id',
+    symbol: 'Rp',
+  );
 
   Future<List<Order>> getCurrentUserOrdersList() async {
     List<Order> ordersListOfCurrentUser = [];
@@ -246,7 +249,9 @@ class _OrderFragmentScreenState extends State<OrderFragmentScreen> {
                                     height: 5,
                                   ),
                                   Text(
-                                    eachOrderData.totalAmount.toString(),
+                                    (formatter
+                                        .format(eachOrderData.totalAmount)
+                                        .replaceAll(",00", "")),
                                     style: const TextStyle(
                                       fontSize: 17,
                                       color: Color(0xff575fcf),
@@ -266,10 +271,10 @@ class _OrderFragmentScreenState extends State<OrderFragmentScreen> {
             },
           );
         } else {
-          return Column(
+          return const Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.center,
-            children: const [
+            children: [
               Center(
                 child: Column(
                   children: [
@@ -445,7 +450,9 @@ class _OrderFragmentScreenState extends State<OrderFragmentScreen> {
                                         height: 5,
                                       ),
                                       Text(
-                                        eachOrderData.totalAmount.toString(),
+                                        (formatter
+                                            .format(eachOrderData.totalAmount)
+                                            .replaceAll(",00", "")),
                                         style: const TextStyle(
                                           fontSize: 17,
                                           color: Color(0xff575fcf),
@@ -467,18 +474,26 @@ class _OrderFragmentScreenState extends State<OrderFragmentScreen> {
             },
           );
         } else {
-          return Column(
+          return const Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.center,
-            children: const [
+            children: [
               Center(
-                child: Text(
-                  "Nothing to show",
-                  style: TextStyle(color: Colors.white),
+                child: Column(
+                  children: [
+                    Image(
+                      image: AssetImage("images/icon-kardus-trisakti.png"),
+                      width: 130,
+                    ),
+                    SizedBox(height: 10),
+                    Text(
+                      "Menu kosong nih",
+                      style: TextStyle(
+                        color: Color(0xffbdc3c7),
+                      ),
+                    ),
+                  ],
                 ),
-              ),
-              Center(
-                child: CircularProgressIndicator(),
               ),
             ],
           );
