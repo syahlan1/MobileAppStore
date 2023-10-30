@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
+import 'package:store_app/users/controllers/cart_list_controller.dart';
 import 'package:store_app/users/controllers/order_now_controller.dart';
 import 'package:intl/intl.dart';
 import 'package:store_app/users/order/order_confirmation.dart';
@@ -15,17 +16,9 @@ class OrderNowScreen extends StatelessWidget {
   );
 
   OrderNowController orderNowController = Get.put(OrderNowController());
-  List<String> deliverySystemNameList = [
-    "FedEx",
-    "DHL",
-    "United Parcel Service"
-  ];
+  List<String> deliverySystemNameList = ["JNE", "J&T", "Kargo"];
 
-  List<String> paymentSystemNameList = [
-    "Apple Pay",
-    "Wire Transfer",
-    "Google Pay"
-  ];
+  List<String> paymentSystemNameList = ["BCA", "BNI", "BRI"];
 
   TextEditingController phoneNumberController = TextEditingController();
   TextEditingController shipmentAddressController = TextEditingController();
@@ -40,11 +33,11 @@ class OrderNowScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black,
       appBar: AppBar(
-        backgroundColor: Colors.black,
+        backgroundColor: Colors.transparent,
+        elevation: 0.0,
         title: Text(
-          "Order Now",
+          "Pemesanan",
         ),
         titleSpacing: 0,
       ),
@@ -61,10 +54,10 @@ class OrderNowScreen extends StatelessWidget {
           const Padding(
             padding: EdgeInsets.symmetric(horizontal: 16.0),
             child: Text(
-              "Delivery System:",
+              "Jenis Pengiriman:",
               style: TextStyle(
                 fontSize: 18,
-                color: Colors.white,
+                color: Color(0xff2c3e50),
                 fontWeight: FontWeight.bold,
               ),
             ),
@@ -75,14 +68,14 @@ class OrderNowScreen extends StatelessWidget {
             child: Column(
               children: deliverySystemNameList.map((deliverySystemName) {
                 return Obx(() => RadioListTile(
-                      tileColor: Colors.white24,
+                      tileColor: Colors.white,
                       dense: true,
-                      activeColor: Colors.purpleAccent,
+                      activeColor: Color(0xff575fcf),
                       title: Text(
                         deliverySystemName,
                         style: const TextStyle(
                           fontSize: 16,
-                          color: Colors.white,
+                          color: Colors.black,
                         ),
                       ),
                       value: deliverySystemName,
@@ -107,10 +100,10 @@ class OrderNowScreen extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  "Payment System:",
+                  "Sistem Pembayaran:",
                   style: TextStyle(
                     fontSize: 18,
-                    color: Colors.white,
+                    color: Color(0xff2c3e50),
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -121,7 +114,7 @@ class OrderNowScreen extends StatelessWidget {
                   "Company Account Number / ID: Y876-HFG7-CVBN-FN3N",
                   style: TextStyle(
                     fontSize: 12,
-                    color: Colors.white38,
+                    color: Color(0xff2c3e50),
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -134,14 +127,14 @@ class OrderNowScreen extends StatelessWidget {
             child: Column(
               children: paymentSystemNameList.map((paymentSystemName) {
                 return Obx(() => RadioListTile(
-                      tileColor: Colors.white24,
+                      tileColor: Colors.white,
                       dense: true,
-                      activeColor: Colors.purpleAccent,
+                      activeColor: Color(0xff575fcf),
                       title: Text(
                         paymentSystemName,
                         style: const TextStyle(
                           fontSize: 16,
-                          color: Colors.white,
+                          color: Colors.black,
                         ),
                       ),
                       value: paymentSystemName,
@@ -159,10 +152,10 @@ class OrderNowScreen extends StatelessWidget {
           const Padding(
             padding: EdgeInsets.symmetric(horizontal: 16.0),
             child: Text(
-              "Phone System:",
+              "Nomor telepon:",
               style: TextStyle(
                 fontSize: 18,
-                color: Colors.white,
+                color: Color(0xff2c3e50),
                 fontWeight: FontWeight.bold,
               ),
             ),
@@ -172,13 +165,13 @@ class OrderNowScreen extends StatelessWidget {
             padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
             child: TextField(
               style: const TextStyle(
-                color: Colors.white54,
+                color: Colors.black,
               ),
               controller: phoneNumberController,
               decoration: InputDecoration(
-                hintText: 'any Contact Number..',
+                hintText: 'Nomor telepon kamu..',
                 hintStyle: const TextStyle(
-                  color: Colors.white24,
+                  color: Colors.grey,
                 ),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
@@ -186,15 +179,15 @@ class OrderNowScreen extends StatelessWidget {
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
                   borderSide: const BorderSide(
-                    color: Colors.grey,
+                    color: Color(0xff34495e),
                     width: 2,
                   ),
                 ),
                 enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
                   borderSide: const BorderSide(
-                    color: Colors.white24,
-                    width: 2,
+                    color: Color(0xff34495e),
+                    width: 1,
                   ),
                 ),
               ),
@@ -209,10 +202,10 @@ class OrderNowScreen extends StatelessWidget {
           const Padding(
             padding: EdgeInsets.symmetric(horizontal: 16.0),
             child: Text(
-              "Shipment Address:",
+              "Alamat Pengiriman:",
               style: TextStyle(
                 fontSize: 18,
-                color: Colors.white,
+                color: Color(0xff2c3e50),
                 fontWeight: FontWeight.bold,
               ),
             ),
@@ -222,13 +215,13 @@ class OrderNowScreen extends StatelessWidget {
             padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
             child: TextField(
               style: const TextStyle(
-                color: Colors.white54,
+                color: Colors.black,
               ),
               controller: shipmentAddressController,
               decoration: InputDecoration(
-                hintText: 'your Shipment Address..',
+                hintText: 'Alamat kamu..',
                 hintStyle: const TextStyle(
-                  color: Colors.white24,
+                  color: Colors.grey,
                 ),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
@@ -236,15 +229,15 @@ class OrderNowScreen extends StatelessWidget {
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
                   borderSide: const BorderSide(
-                    color: Colors.grey,
+                    color: Color(0xff34495e),
                     width: 2,
                   ),
                 ),
                 enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
                   borderSide: const BorderSide(
-                    color: Colors.white24,
-                    width: 2,
+                    color: Color(0xff34495e),
+                    width: 1,
                   ),
                 ),
               ),
@@ -259,10 +252,10 @@ class OrderNowScreen extends StatelessWidget {
           const Padding(
             padding: EdgeInsets.symmetric(horizontal: 16.0),
             child: Text(
-              "Note to Seller:",
+              "Catatan ke penjual:",
               style: TextStyle(
                 fontSize: 18,
-                color: Colors.white,
+                color: Color(0xff2c3e50),
                 fontWeight: FontWeight.bold,
               ),
             ),
@@ -272,13 +265,13 @@ class OrderNowScreen extends StatelessWidget {
             padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
             child: TextField(
               style: const TextStyle(
-                color: Colors.white54,
+                color: Colors.black,
               ),
               controller: noteToSellerController,
               decoration: InputDecoration(
-                hintText: 'any note you want to write to seller..',
+                hintText: 'Catatan buat penjual..',
                 hintStyle: const TextStyle(
-                  color: Colors.white24,
+                  color: Colors.grey,
                 ),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
@@ -286,15 +279,15 @@ class OrderNowScreen extends StatelessWidget {
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
                   borderSide: const BorderSide(
-                    color: Colors.grey,
+                    color: Color(0xff34495e),
                     width: 2,
                   ),
                 ),
                 enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
                   borderSide: const BorderSide(
-                    color: Colors.white24,
-                    width: 2,
+                    color: Color(0xff34495e),
+                    width: 1,
                   ),
                 ),
               ),
@@ -305,15 +298,33 @@ class OrderNowScreen extends StatelessWidget {
             height: 30,
           ),
 
-          //pay amount now button
-          Row(
+          const SizedBox(
+            height: 30,
+          ),
+        ],
+      ),
+      bottomNavigationBar: //pay amount now button
+          SizedBox(
+        height: 60,
+        child: Container(
+          decoration: const BoxDecoration(
+            color: Colors.white,
+            boxShadow: [
+              BoxShadow(
+                offset: Offset(0, -3),
+                color: Color(0xffecf0f1),
+                blurRadius: 6,
+              ),
+            ],
+          ),
+          child: Row(
             children: [
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: Text(
                   (formatter.format(totalAmount!).replaceAll(",00", "")),
                   style: TextStyle(
-                    color: Colors.white70,
+                    color: Colors.black,
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
                   ),
@@ -323,7 +334,7 @@ class OrderNowScreen extends StatelessWidget {
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 16),
                 child: Material(
-                  color: Colors.purpleAccent,
+                  color: Color(0xff575fcf),
                   borderRadius: BorderRadius.circular(30),
                   child: InkWell(
                     onTap: () {
@@ -346,9 +357,9 @@ class OrderNowScreen extends StatelessWidget {
                     borderRadius: BorderRadius.circular(30),
                     child: const Padding(
                       padding:
-                          EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                          EdgeInsets.symmetric(horizontal: 18, vertical: 12),
                       child: Text(
-                        "Pay Amount Now",
+                        "Bayar Sekarang",
                         style: TextStyle(
                           color: Colors.white,
                           fontSize: 16,
@@ -361,11 +372,7 @@ class OrderNowScreen extends StatelessWidget {
               ),
             ],
           ),
-
-          const SizedBox(
-            height: 30,
-          ),
-        ],
+        ),
       ),
     );
   }
@@ -377,30 +384,21 @@ class OrderNowScreen extends StatelessWidget {
             selectedCartListItemsInfo![index];
 
         return Container(
+          padding: EdgeInsets.all(5),
           margin: EdgeInsets.fromLTRB(16, index == 0 ? 16 : 8, 16,
               index == selectedCartListItemsInfo!.length - 1 ? 16 : 8),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(20),
-            color: Colors.white24,
-            boxShadow: [
-              BoxShadow(
-                offset: Offset(0, 0),
-                blurRadius: 6,
-                color: Colors.black26,
-              ),
-            ],
+            color: Colors.white,
           ),
           child: Row(
             children: [
               //image
               ClipRRect(
-                borderRadius: const BorderRadius.only(
-                  topLeft: Radius.circular(20),
-                  bottomLeft: Radius.circular(20),
-                ),
+                borderRadius: BorderRadius.circular(5),
                 child: FadeInImage(
-                  height: 130,
-                  width: 130,
+                  height: 100,
+                  width: 100,
                   fit: BoxFit.cover,
                   placeholder: const AssetImage("images/place_holder.png"),
                   image: NetworkImage(
@@ -431,13 +429,12 @@ class OrderNowScreen extends StatelessWidget {
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         style: const TextStyle(
-                          color: Colors.white70,
+                          color: Colors.black,
                           fontSize: 16,
-                          fontWeight: FontWeight.bold,
                         ),
                       ),
 
-                      const SizedBox(height: 10),
+                      const SizedBox(height: 5),
 
                       //size + color
                       Text(
@@ -458,24 +455,32 @@ class OrderNowScreen extends StatelessWidget {
                         ),
                       ),
 
-                      const SizedBox(height: 10),
+                      const SizedBox(height: 5),
 
                       //price
                       Text(
-                        eachSelectedItem["price"].toString(),
+                        (formatter
+                            .format(eachSelectedItem["price"])
+                            .replaceAll(",00", "")),
                         overflow: TextOverflow.ellipsis,
                         style: const TextStyle(
                           fontSize: 18,
-                          color: Colors.purpleAccent,
+                          color: Color(0xff2c3e50),
                           fontWeight: FontWeight.bold,
                         ),
                       ),
+
+                      const SizedBox(height: 5),
                       Text(
-                        eachSelectedItem["price"].toString() +
+                        (formatter
+                                .format(eachSelectedItem["price"])
+                                .replaceAll(",00", "")) +
                             " x " +
                             eachSelectedItem["quantity"].toString() +
                             " = " +
-                            eachSelectedItem["totalAmount"].toString(),
+                            (formatter
+                                .format(eachSelectedItem["totalAmount"])
+                                .replaceAll(",00", "")),
                         style: const TextStyle(
                           color: Colors.grey,
                           fontSize: 12,
@@ -493,7 +498,7 @@ class OrderNowScreen extends StatelessWidget {
                   "x" + eachSelectedItem["quantity"].toString(),
                   style: const TextStyle(
                     fontSize: 15,
-                    color: Colors.white,
+                    color: Colors.black,
                   ),
                 ),
               ),
