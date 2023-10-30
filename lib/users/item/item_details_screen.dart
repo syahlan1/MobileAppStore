@@ -221,8 +221,8 @@ class _ItemDetailsScreenState extends State<ItemDetailsScreen> {
                         },
                         icon: Icon(
                           itemDetailsController.isFavorite
-                              ? Icons.bookmark
-                              : Icons.bookmark_border_outlined,
+                              ? Icons.favorite
+                              : Icons.favorite_outline,
                           color: Colors.white,
                         ),
                       )),
@@ -251,18 +251,11 @@ class _ItemDetailsScreenState extends State<ItemDetailsScreen> {
       height: MediaQuery.of(Get.context!).size.height * 0.6,
       width: MediaQuery.of(Get.context!).size.width,
       decoration: const BoxDecoration(
-        color: Colors.black,
+        color: Colors.white,
         borderRadius: BorderRadius.only(
           topLeft: Radius.circular(30),
           topRight: Radius.circular(30),
         ),
-        boxShadow: [
-          BoxShadow(
-            offset: Offset(0, -3),
-            blurRadius: 6,
-            color: Colors.purpleAccent,
-          ),
-        ],
       ),
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: SingleChildScrollView(
@@ -276,9 +269,9 @@ class _ItemDetailsScreenState extends State<ItemDetailsScreen> {
             Center(
               child: Container(
                 height: 8,
-                width: 140,
+                width: 100,
                 decoration: BoxDecoration(
-                  color: Colors.purpleAccent,
+                  color: Color(0xffecf0f1),
                   borderRadius: BorderRadius.circular(30),
                 ),
               ),
@@ -295,7 +288,7 @@ class _ItemDetailsScreenState extends State<ItemDetailsScreen> {
               overflow: TextOverflow.ellipsis,
               style: const TextStyle(
                 fontSize: 24,
-                color: Colors.purpleAccent,
+                color: Color(0xff2c3e50),
                 fontWeight: FontWeight.bold,
               ),
             ),
@@ -346,7 +339,7 @@ class _ItemDetailsScreenState extends State<ItemDetailsScreen> {
                           Text(
                             "(" + widget.itemInfo!.rating.toString() + ")",
                             style: const TextStyle(
-                              color: Colors.purpleAccent,
+                              color: Color(0xff34495e),
                             ),
                           ),
                         ],
@@ -376,7 +369,7 @@ class _ItemDetailsScreenState extends State<ItemDetailsScreen> {
                             .replaceAll(",00", ""),
                         style: const TextStyle(
                           fontSize: 24,
-                          color: Colors.purpleAccent,
+                          color: Colors.orangeAccent,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
@@ -397,14 +390,14 @@ class _ItemDetailsScreenState extends State<ItemDetailsScreen> {
                         },
                         icon: const Icon(
                           Icons.add_circle_outline,
-                          color: Colors.white,
+                          color: Color(0xfff6b93b),
                         ),
                       ),
                       Text(
                         itemDetailsController.quantity.toString(),
                         style: const TextStyle(
                           fontSize: 20,
-                          color: Colors.purpleAccent,
+                          color: Color(0xff2c3e50),
                           fontWeight: FontWeight.bold,
                         ),
                       ),
@@ -421,7 +414,7 @@ class _ItemDetailsScreenState extends State<ItemDetailsScreen> {
                         },
                         icon: const Icon(
                           Icons.remove_circle_outline,
-                          color: Colors.white,
+                          color: Color(0xfff6b93b),
                         ),
                       ),
                     ],
@@ -435,7 +428,7 @@ class _ItemDetailsScreenState extends State<ItemDetailsScreen> {
               "Size:",
               style: TextStyle(
                 fontSize: 18,
-                color: Colors.purpleAccent,
+                color: Color(0xff2c3e50),
                 fontWeight: FontWeight.bold,
               ),
             ),
@@ -451,26 +444,28 @@ class _ItemDetailsScreenState extends State<ItemDetailsScreen> {
                     },
                     child: Container(
                       height: 35,
-                      width: 60,
+                      padding: EdgeInsets.all(5),
                       decoration: BoxDecoration(
                         border: Border.all(
-                          width: 2,
+                          width: 1,
                           color: itemDetailsController.size == index
-                              ? Colors.transparent
-                              : Colors.grey,
+                              ? Color(0xff575fcf)
+                              : Color(0xff34495e),
                         ),
+                        borderRadius: BorderRadius.circular(7),
                         color: itemDetailsController.size == index
-                            ? Colors.purpleAccent.withOpacity(0.4)
-                            : Colors.black,
+                            ? Color(0xff575fcf).withOpacity(0.1)
+                            : Colors.white,
                       ),
-                      alignment: Alignment.center,
                       child: Text(
                         widget.itemInfo!.sizes![index]
                             .replaceAll("[", "")
                             .replaceAll("]", ""),
                         style: TextStyle(
                           fontSize: 16,
-                          color: Colors.grey[700],
+                          color: itemDetailsController.size == index
+                              ? Color(0xff575fcf)
+                              : Color(0xff34495e),
                         ),
                       ),
                     ),
@@ -486,7 +481,7 @@ class _ItemDetailsScreenState extends State<ItemDetailsScreen> {
               "Color:",
               style: TextStyle(
                 fontSize: 18,
-                color: Colors.purpleAccent,
+                color: Color(0xff2c3e50),
                 fontWeight: FontWeight.bold,
               ),
             ),
@@ -502,26 +497,28 @@ class _ItemDetailsScreenState extends State<ItemDetailsScreen> {
                     },
                     child: Container(
                       height: 35,
-                      width: 60,
+                      padding: EdgeInsets.all(5),
                       decoration: BoxDecoration(
                         border: Border.all(
-                          width: 2,
+                          width: 1,
                           color: itemDetailsController.color == index
-                              ? Colors.transparent
-                              : Colors.grey,
+                              ? Color(0xff575fcf)
+                              : Color(0xff34495e),
                         ),
+                        borderRadius: BorderRadius.circular(7),
                         color: itemDetailsController.color == index
-                            ? Colors.purpleAccent.withOpacity(0.4)
-                            : Colors.black,
+                            ? Color(0xff575fcf).withOpacity(0.1)
+                            : Colors.white,
                       ),
-                      alignment: Alignment.center,
                       child: Text(
                         widget.itemInfo!.colors![index]
                             .replaceAll("[", "")
                             .replaceAll("]", ""),
                         style: TextStyle(
                           fontSize: 16,
-                          color: Colors.grey[700],
+                          color: itemDetailsController.color == index
+                              ? Color(0xff575fcf)
+                              : Color(0xff34495e),
                         ),
                       ),
                     ),
@@ -537,7 +534,7 @@ class _ItemDetailsScreenState extends State<ItemDetailsScreen> {
               "Description:",
               style: TextStyle(
                 fontSize: 18,
-                color: Colors.purpleAccent,
+                color: Color(0xff2c3e50),
                 fontWeight: FontWeight.bold,
               ),
             ),
@@ -555,7 +552,7 @@ class _ItemDetailsScreenState extends State<ItemDetailsScreen> {
             //add to cart button
             Material(
               elevation: 4,
-              color: Colors.purpleAccent,
+              color: Color(0xff575fcf),
               borderRadius: BorderRadius.circular(10),
               child: InkWell(
                 onTap: () {

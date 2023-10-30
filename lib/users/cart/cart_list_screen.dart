@@ -155,37 +155,11 @@ class _CartListScreenState extends State<CartListScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black,
       appBar: AppBar(
-        backgroundColor: Colors.black,
-        title: const Text("My Cart"),
+        backgroundColor: Colors.transparent,
+        elevation: 0.0,
+        title: const Text("Keranjang"),
         actions: [
-          //to select all items
-          Obx(
-            () => IconButton(
-              onPressed: () {
-                cartListController.setIsSelectedAllItems();
-                cartListController.clearAllSelectedItems();
-
-                if (cartListController.isSelectedAll) {
-                  cartListController.cartList.forEach((eachItem) {
-                    cartListController.addSelectedItem(eachItem.cart_id!);
-                  });
-                }
-
-                calculateTotalAmount();
-              },
-              icon: Icon(
-                cartListController.isSelectedAll
-                    ? Icons.check_box
-                    : Icons.check_box_outline_blank,
-                color: cartListController.isSelectedAll
-                    ? Colors.white
-                    : Colors.grey,
-              ),
-            ),
-          ),
-
           //to delete selected item/items
           GetBuilder(
               init: CartListController(),
@@ -195,10 +169,10 @@ class _CartListScreenState extends State<CartListScreen> {
                     onPressed: () async {
                       var responseFromDialogBox = await Get.dialog(
                         AlertDialog(
-                          backgroundColor: Colors.grey,
-                          title: const Text("Delete"),
+                          backgroundColor: Colors.white,
+                          title: const Text("Hapus"),
                           content: const Text(
-                              "Are you sure to Delete selected items from your Cart List?"),
+                              "Ingin menghapus produk ini dari keranjang kamu?"),
                           actions: [
                             TextButton(
                               onPressed: () {
@@ -237,7 +211,7 @@ class _CartListScreenState extends State<CartListScreen> {
                       calculateTotalAmount();
                     },
                     icon: const Icon(
-                      Icons.delete_sweep,
+                      Icons.delete,
                       size: 26,
                       color: Colors.redAccent,
                     ),
@@ -246,6 +220,32 @@ class _CartListScreenState extends State<CartListScreen> {
                   return Container();
                 }
               }),
+
+          //to select all items
+          Obx(
+            () => IconButton(
+              onPressed: () {
+                cartListController.setIsSelectedAllItems();
+                cartListController.clearAllSelectedItems();
+
+                if (cartListController.isSelectedAll) {
+                  cartListController.cartList.forEach((eachItem) {
+                    cartListController.addSelectedItem(eachItem.cart_id!);
+                  });
+                }
+
+                calculateTotalAmount();
+              },
+              icon: Icon(
+                cartListController.isSelectedAll
+                    ? Icons.check_box
+                    : Icons.check_box_outline_blank,
+                color: cartListController.isSelectedAll
+                    ? Color(0xff575fcf)
+                    : Colors.grey,
+              ),
+            ),
+          ),
         ],
       ),
       body: Obx(
@@ -295,7 +295,7 @@ class _CartListScreenState extends State<CartListScreen> {
                                     ? Icons.check_box
                                     : Icons.check_box_outline_blank,
                                 color: cartListController.isSelectedAll
-                                    ? Colors.white
+                                    ? Color(0xff575fcf)
                                     : Colors.grey,
                               ),
                             );
@@ -321,18 +321,35 @@ class _CartListScreenState extends State<CartListScreen> {
                                     : 8,
                               ),
                               decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(20),
-                                color: Colors.black,
-                                boxShadow: const [
-                                  BoxShadow(
-                                    offset: Offset(0, 0),
-                                    blurRadius: 6,
-                                    color: Colors.white,
-                                  ),
-                                ],
+                                borderRadius: BorderRadius.circular(10),
+                                color: Colors.white,
                               ),
                               child: Row(
                                 children: [
+                                  Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: ClipRRect(
+                                      borderRadius: BorderRadius.circular(5),
+                                      child: FadeInImage(
+                                        height: 110,
+                                        width: 110,
+                                        fit: BoxFit.cover,
+                                        placeholder: const AssetImage(
+                                            "images/place_holder.png"),
+                                        image: NetworkImage(
+                                          cartModel.image!,
+                                        ),
+                                        imageErrorBuilder:
+                                            (context, error, stackTraceError) {
+                                          return const Center(
+                                            child: Icon(
+                                              Icons.broken_image_outlined,
+                                            ),
+                                          );
+                                        },
+                                      ),
+                                    ),
+                                  ),
                                   //name
                                   //color size + price
                                   //+ 2 -
@@ -346,60 +363,49 @@ class _CartListScreenState extends State<CartListScreen> {
                                           //name
                                           Text(
                                             clothesModel.name.toString(),
-                                            maxLines: 2,
+                                            maxLines: 1,
                                             overflow: TextOverflow.ellipsis,
                                             style: const TextStyle(
-                                              fontSize: 18,
-                                              color: Colors.grey,
-                                              fontWeight: FontWeight.bold,
+                                              fontSize: 17,
+                                              color: Color(0xff2c3e50),
                                             ),
                                           ),
 
-                                          const SizedBox(height: 20),
+                                          const SizedBox(height: 5),
 
                                           //color size + price
-                                          Row(
-                                            children: [
-                                              //color size
-                                              Expanded(
-                                                child: Text(
-                                                  "Color: ${cartModel.color!.replaceAll('[', '').replaceAll(']', '')}" +
-                                                      "\n" +
-                                                      "Size: ${cartModel.size!.replaceAll('[', '').replaceAll(']', '')}",
-                                                  maxLines: 3,
-                                                  overflow:
-                                                      TextOverflow.ellipsis,
-                                                  style: const TextStyle(
-                                                    color: Colors.white60,
-                                                  ),
-                                                ),
-                                              ),
-
-                                              //price
-                                              Padding(
-                                                padding: const EdgeInsets.only(
-                                                    left: 12, right: 12.0),
-                                                child: Text(
-                                                  (formatter
-                                                      .format(
-                                                          clothesModel.price)
-                                                      .replaceAll(",00", "")),
-                                                  style: const TextStyle(
-                                                    fontSize: 20,
-                                                    color: Colors.purpleAccent,
-                                                    fontWeight: FontWeight.bold,
-                                                  ),
-                                                ),
-                                              ),
-                                            ],
+                                          Text(
+                                            "${cartModel.color!.replaceAll('[', '').replaceAll(']', '')}" +
+                                                "\n" +
+                                                "${cartModel.size!.replaceAll('[', '').replaceAll(']', '')}",
+                                            maxLines: 3,
+                                            overflow: TextOverflow.ellipsis,
+                                            style: const TextStyle(
+                                              color: Colors.grey,
+                                              fontSize: 13,
+                                            ),
                                           ),
-
-                                          const SizedBox(height: 20),
+                                          const SizedBox(height: 5),
+                                          Container(
+                                            alignment: Alignment.bottomLeft,
+                                            child: Text(
+                                              (formatter
+                                                  .format(clothesModel.price)
+                                                  .replaceAll(",00", "")),
+                                              style: const TextStyle(
+                                                fontSize: 17,
+                                                color: Colors.orange,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                          ),
 
                                           //+ 2 -
                                           Row(
                                             crossAxisAlignment:
                                                 CrossAxisAlignment.center,
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.end,
                                             children: [
                                               //-
                                               IconButton(
@@ -414,8 +420,8 @@ class _CartListScreenState extends State<CartListScreen> {
                                                 },
                                                 icon: const Icon(
                                                   Icons.remove_circle_outline,
-                                                  color: Colors.grey,
-                                                  size: 30,
+                                                  color: Colors.orange,
+                                                  size: 23,
                                                 ),
                                               ),
 
@@ -426,9 +432,8 @@ class _CartListScreenState extends State<CartListScreen> {
                                               Text(
                                                 cartModel.quantity.toString(),
                                                 style: const TextStyle(
-                                                  color: Colors.purpleAccent,
-                                                  fontSize: 20,
-                                                  fontWeight: FontWeight.bold,
+                                                  color: Color(0xff2c3e50),
+                                                  fontSize: 16,
                                                 ),
                                               ),
 
@@ -446,8 +451,8 @@ class _CartListScreenState extends State<CartListScreen> {
                                                 },
                                                 icon: const Icon(
                                                   Icons.add_circle_outline,
-                                                  color: Colors.grey,
-                                                  size: 30,
+                                                  color: Colors.orange,
+                                                  size: 23,
                                                 ),
                                               ),
                                             ],
@@ -458,30 +463,6 @@ class _CartListScreenState extends State<CartListScreen> {
                                   ),
 
                                   //item image
-                                  ClipRRect(
-                                    borderRadius: const BorderRadius.only(
-                                      topRight: Radius.circular(22),
-                                      bottomRight: Radius.circular(22),
-                                    ),
-                                    child: FadeInImage(
-                                      height: 185,
-                                      width: 150,
-                                      fit: BoxFit.cover,
-                                      placeholder: const AssetImage(
-                                          "images/place_holder.png"),
-                                      image: NetworkImage(
-                                        cartModel.image!,
-                                      ),
-                                      imageErrorBuilder:
-                                          (context, error, stackTraceError) {
-                                        return const Center(
-                                          child: Icon(
-                                            Icons.broken_image_outlined,
-                                          ),
-                                        );
-                                      },
-                                    ),
-                                  ),
                                 ],
                               ),
                             ),
@@ -492,93 +473,123 @@ class _CartListScreenState extends State<CartListScreen> {
                   );
                 },
               )
-            : const Center(
-                child: Text("Cart is Empty"),
-              ),
-      ),
-      bottomNavigationBar: GetBuilder(
-        init: CartListController(),
-        builder: (c) {
-          return Container(
-            decoration: const BoxDecoration(
-              color: Colors.black,
-              boxShadow: [
-                BoxShadow(
-                  offset: Offset(0, -3),
-                  color: Colors.white24,
-                  blurRadius: 6,
-                ),
-              ],
-            ),
-            padding: const EdgeInsets.symmetric(
-              horizontal: 16,
-              vertical: 8,
-            ),
-            child: Row(
-              children: [
-                //total amount
-                const Text(
-                  "Total Amount:",
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: Colors.white38,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                const SizedBox(width: 4),
-                Obx(
-                  () => Text(
-                    (formatter
-                        .format(cartListController.total)
-                        .replaceAll(",00", "")),
-                    maxLines: 1,
-                    style: const TextStyle(
-                      color: Colors.white70,
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
+            : const Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Center(
+                    child: Column(
+                      children: [
+                        Image(
+                          image: AssetImage("images/icon-kardus-trisakti.png"),
+                          width: 130,
+                        ),
+                        SizedBox(height: 10),
+                        Text(
+                          "Keranjang kamu kosong nih",
+                          style: TextStyle(
+                            color: Color(0xffbdc3c7),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                ),
-
-                const Spacer(),
-
-                //order now btn
-                Material(
-                  color: cartListController.selectedItemList.length > 0
-                      ? Colors.purpleAccent
-                      : Colors.white24,
-                  borderRadius: BorderRadius.circular(30),
-                  child: InkWell(
-                    onTap: () {
-                      cartListController.selectedItemList.length > 0
-                          ? Get.to(OrderNowScreen(
-                              selectedCartListItemsInfo:
-                                  getSelectedCartListItemsInformation(),
-                              totalAmount: cartListController.total,
-                              selectedCartIDs:
-                                  cartListController.selectedItemList,
-                            ))
-                          : null;
-                    },
-                    child: const Padding(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: 20,
-                        vertical: 8,
-                      ),
-                      child: Text(
-                        "Order Now",
+                ],
+              ),
+      ),
+      bottomNavigationBar: SizedBox(
+        height: 70,
+        child: GetBuilder(
+          init: CartListController(),
+          builder: (c) {
+            return Container(
+              decoration: const BoxDecoration(
+                color: Colors.white,
+                boxShadow: [
+                  BoxShadow(
+                    offset: Offset(0, -3),
+                    color: Color(0xffecf0f1),
+                    blurRadius: 6,
+                  ),
+                ],
+              ),
+              padding: const EdgeInsets.symmetric(
+                horizontal: 16,
+                vertical: 10,
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  //total amount
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "Total Belanja:",
                         style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 14,
+                          fontSize: 13,
+                          color: Color(0xff34495e),
+                        ),
+                      ),
+                      const SizedBox(width: 5),
+                      Obx(
+                        () => Text(
+                          (formatter
+                              .format(cartListController.total)
+                              .replaceAll(",00", "")),
+                          maxLines: 1,
+                          style: const TextStyle(
+                            color: Colors.black,
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+
+                  const Spacer(),
+
+                  //order now btn
+                  Material(
+                    color: cartListController.selectedItemList.length > 0
+                        ? Color(0xff575fcf)
+                        : Colors.grey,
+                    borderRadius: BorderRadius.circular(30),
+                    child: InkWell(
+                      borderRadius: BorderRadius.circular(30),
+                      onTap: () {
+                        cartListController.selectedItemList.length > 0
+                            ? Get.to(OrderNowScreen(
+                                selectedCartListItemsInfo:
+                                    getSelectedCartListItemsInformation(),
+                                totalAmount: cartListController.total,
+                                selectedCartIDs:
+                                    cartListController.selectedItemList,
+                              ))
+                            : null;
+                      },
+                      child: const Padding(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 32,
+                          vertical: 12,
+                        ),
+                        child: Text(
+                          "Beli",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                       ),
                     ),
                   ),
-                ),
-              ],
-            ),
-          );
-        },
+                ],
+              ),
+            );
+          },
+        ),
       ),
     );
   }
