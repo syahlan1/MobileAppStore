@@ -64,19 +64,31 @@ class _SearchItemsState extends State<SearchItems> {
 
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black,
       appBar: AppBar(
-        backgroundColor: Colors.white24,
+        backgroundColor: Colors.white,
+        elevation: 0.0,
         title: showSearchBarWidget(),
         titleSpacing: 0,
         leading: IconButton(
+          onPressed: () {
+            Get.back();
+          },
+          icon: Icon(
+            Icons.arrow_back,
+            color: Colors.black,
+          ),
+        ),
+        actions: [
+          IconButton(
             onPressed: () {
-              Get.back();
+              Get.to(CartListScreen());
             },
-            icon: Icon(
-              Icons.arrow_back,
-              color: Colors.purpleAccent,
-            )),
+            icon: const Icon(
+              Icons.shopping_cart,
+              color: Color(0xff2f3542),
+            ),
+          ),
+        ],
       ),
       body: searchItemDesignWidget(context),
     );
@@ -86,7 +98,7 @@ class _SearchItemsState extends State<SearchItems> {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 18),
       child: TextField(
-        style: const TextStyle(color: Colors.white),
+        style: const TextStyle(color: Colors.black),
         controller: searchController,
         decoration: InputDecoration(
           prefixIcon: IconButton(
@@ -95,10 +107,10 @@ class _SearchItemsState extends State<SearchItems> {
             },
             icon: const Icon(
               Icons.search,
-              color: Colors.purpleAccent,
+              color: Color(0xff34495e),
             ),
           ),
-          hintText: "Search best clothes here...",
+          hintText: "Cari barang lainnya...",
           hintStyle: const TextStyle(
             color: Colors.grey,
             fontSize: 12,
@@ -110,19 +122,19 @@ class _SearchItemsState extends State<SearchItems> {
             },
             icon: const Icon(
               Icons.close,
-              color: Colors.purpleAccent,
+              color: Color(0xff34495e),
             ),
           ),
           enabledBorder: const OutlineInputBorder(
             borderSide: BorderSide(
               width: 2,
-              color: Colors.purple,
+              color: Color(0xff6b83bc),
             ),
           ),
           focusedBorder: const OutlineInputBorder(
             borderSide: BorderSide(
               width: 2,
-              color: Colors.purpleAccent,
+              color: Colors.black,
             ),
           ),
           contentPadding: const EdgeInsets.symmetric(
@@ -138,153 +150,169 @@ class _SearchItemsState extends State<SearchItems> {
     return FutureBuilder(
         future: readSearchRecordFound(),
         builder: (context, AsyncSnapshot<List<Clothes>> dataSnapShot) {
-          if (dataSnapShot.connectionState == ConnectionState.waiting) {
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
-          }
-          if (dataSnapShot.data == null) {
-            return const Center(
-              child: Text(
-                "No Trending item found",
-              ),
-            );
-          }
           if (dataSnapShot.data!.length > 0) {
-            return ListView.builder(
-              itemCount: dataSnapShot.data!.length,
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              scrollDirection: Axis.vertical,
-              itemBuilder: (context, index) {
-                Clothes eachClothItemRecord = dataSnapShot.data![index];
+            return Column(
+              children: [
+                SizedBox(
+                  height: 20,
+                ),
+                GridView.builder(
+                  scrollDirection: Axis.vertical,
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                    childAspectRatio: 0.64,
+                  ),
+                  itemCount: dataSnapShot.data!.length,
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemBuilder: (context, index) {
+                    Clothes eachClothItemRecord = dataSnapShot.data![index];
 
-                return GestureDetector(
-                  onTap: () {
-                    Get.to(ItemDetailsScreen(itemInfo: eachClothItemRecord));
-                  },
-                  child: Container(
-                    margin: EdgeInsets.fromLTRB(
-                      16,
-                      index == 0 ? 16 : 8,
-                      16,
-                      index == dataSnapShot.data!.length - 1 ? 16 : 8,
-                    ),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(20),
-                      color: Colors.black,
-                      boxShadow: const [
-                        BoxShadow(
-                          offset: Offset(0, 0),
-                          blurRadius: 6,
-                          color: Colors.white,
-                        ),
-                      ],
-                    ),
-                    child: Row(
-                      children: [
-                        //name + price
-                        //tags
-                        Expanded(
-                          child: Padding(
-                            padding: const EdgeInsets.only(left: 15),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                //name and price
-                                Row(
-                                  children: [
-                                    //name
-                                    Expanded(
-                                      child: Text(
-                                        eachClothItemRecord.name!,
-                                        maxLines: 2,
-                                        overflow: TextOverflow.ellipsis,
-                                        style: const TextStyle(
-                                          fontSize: 18,
-                                          color: Colors.grey,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                    ),
-
-                                    //price
-                                    Padding(
-                                      padding: const EdgeInsets.only(
-                                          left: 12, right: 12),
-                                      child: Text(
-                                        formatter
-                                            .format(eachClothItemRecord.price)
-                                            .replaceAll(",00", ""),
-                                        maxLines: 2,
-                                        overflow: TextOverflow.ellipsis,
-                                        style: const TextStyle(
-                                          fontSize: 18,
-                                          color: Colors.purpleAccent,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                    ),
-                                  ],
+                    return Card(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      color: Colors.white,
+                      elevation: 0.0,
+                      margin: EdgeInsets.fromLTRB(
+                        index == 0 ? 16 : 8,
+                        10,
+                        index == dataSnapShot.data!.length - 1 ? 16 : 8,
+                        10,
+                      ),
+                      child: InkWell(
+                        borderRadius: BorderRadius.circular(10),
+                        onTap: () {
+                          Get.to(
+                              ItemDetailsScreen(itemInfo: eachClothItemRecord));
+                        },
+                        child: Container(
+                          width: 185,
+                          child: Column(
+                            children: [
+                              //image clothes
+                              ClipRRect(
+                                borderRadius: const BorderRadius.only(
+                                  topRight: Radius.circular(10),
+                                  topLeft: Radius.circular(10),
                                 ),
-
-                                const SizedBox(
-                                  height: 16,
+                                child: FadeInImage(
+                                  height: 150,
+                                  width: 185,
+                                  fit: BoxFit.cover,
+                                  placeholder: const AssetImage(
+                                      "images/place_holder.png"),
+                                  image: NetworkImage(
+                                    eachClothItemRecord.image!,
+                                  ),
+                                  imageErrorBuilder:
+                                      (context, error, stackTraceError) {
+                                    return const Center(
+                                      child: Icon(
+                                        Icons.broken_image_outlined,
+                                      ),
+                                    );
+                                  },
                                 ),
+                              ),
 
-                                //tags
-                                Text(
-                                  "Tags: \n" +
-                                      eachClothItemRecord.tags
-                                          .toString()
-                                          .replaceAll("[", "")
-                                          .replaceAll("]", ""),
-                                  maxLines: 2,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: const TextStyle(
-                                    fontSize: 12,
-                                    color: Colors.grey,
+                              //name + price
+                              //tags
+                              Expanded(
+                                child: Container(
+                                  width: 180,
+                                  child: Padding(
+                                    padding: const EdgeInsets.fromLTRB(
+                                        10, 10, 10, 0),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        //name and price
+                                        Expanded(
+                                          child: Text(
+                                            eachClothItemRecord.name!,
+                                            maxLines: 2,
+                                            overflow: TextOverflow.ellipsis,
+                                            style: const TextStyle(
+                                              fontSize: 15,
+                                              color: Colors.black,
+                                            ),
+                                          ),
+                                        ),
+
+                                        //tags
+                                        Expanded(
+                                          child: Text(
+                                            "Tags: \n" +
+                                                eachClothItemRecord.tags
+                                                    .toString()
+                                                    .replaceAll("[", "")
+                                                    .replaceAll("]", ""),
+                                            maxLines: 2,
+                                            overflow: TextOverflow.ellipsis,
+                                            style: const TextStyle(
+                                              fontSize: 12,
+                                              color: Colors.grey,
+                                            ),
+                                          ),
+                                        ),
+
+                                        SizedBox(
+                                          height: 20,
+                                        ),
+
+                                        //price
+                                        Expanded(
+                                          child: Text(
+                                            formatter
+                                                .format(
+                                                    eachClothItemRecord.price)
+                                                .replaceAll(",00", ""),
+                                            overflow: TextOverflow.ellipsis,
+                                            style: const TextStyle(
+                                              fontSize: 16,
+                                              color: Color(0xff575fcf),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
                                   ),
                                 ),
-                              ],
-                            ),
+                              ),
+                            ],
                           ),
                         ),
-
-                        //image clothes
-                        ClipRRect(
-                          borderRadius: const BorderRadius.only(
-                            topRight: Radius.circular(20),
-                            bottomRight: Radius.circular(20),
-                          ),
-                          child: FadeInImage(
-                            height: 130,
-                            width: 130,
-                            fit: BoxFit.cover,
-                            placeholder:
-                                const AssetImage("images/place_holder.png"),
-                            image: NetworkImage(
-                              eachClothItemRecord.image!,
-                            ),
-                            imageErrorBuilder:
-                                (context, error, stackTraceError) {
-                              return const Center(
-                                child: Icon(
-                                  Icons.broken_image_outlined,
-                                ),
-                              );
-                            },
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                );
-              },
+                      ),
+                    );
+                  },
+                ),
+              ],
             );
           } else {
-            return const Center(
-              child: Text("Empty, No Data."),
+            return const Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Center(
+                  child: Column(
+                    children: [
+                      Image(
+                        image: AssetImage("images/icon-kardus-trisakti.png"),
+                        width: 130,
+                      ),
+                      SizedBox(height: 10),
+                      Text(
+                        "Pencarian tidak ditemukan",
+                        style: TextStyle(
+                          color: Color(0xffbdc3c7),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
             );
           }
         });

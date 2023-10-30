@@ -30,9 +30,9 @@ class DashboardOfFragments extends StatelessWidget {
       "label": "Favorite",
     },
     {
-      "active_icon": FontAwesomeIcons.boxOpen,
-      "non_active_icon": FontAwesomeIcons.box,
-      "label": "Order",
+      "active_icon": Icons.receipt,
+      "non_active_icon": Icons.receipt_outlined,
+      "label": "Transaksi",
     },
     {
       "active_icon": Icons.person,

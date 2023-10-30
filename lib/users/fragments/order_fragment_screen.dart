@@ -190,13 +190,32 @@ class _OrderFragmentScreenState extends State<OrderFragmentScreen> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
-                            "Order ID # " + eachOrderData.order_id.toString(),
-                            style: const TextStyle(
-                              fontSize: 16,
-                              color: Colors.black,
-                              fontWeight: FontWeight.bold,
-                            ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                "Order ID # " +
+                                    eachOrderData.order_id.toString(),
+                                style: const TextStyle(
+                                  fontSize: 16,
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              Material(
+                                color: Color(0xfffff59D),
+                                borderRadius: BorderRadius.circular(5),
+                                child: Padding(
+                                  padding: EdgeInsets.all(5),
+                                  child: Text(
+                                    "Diproses",
+                                    style: TextStyle(
+                                        color: Colors.orange,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
                           const SizedBox(
                             height: 15,
@@ -372,7 +391,12 @@ class _OrderFragmentScreenState extends State<OrderFragmentScreen> {
                     children: [
                       Container(
                         child: Center(
-                          child: Text("Selesai"),
+                          child: Text(
+                            "Selesai",
+                            style: TextStyle(
+                              color: Colors.white,
+                            ),
+                          ),
                         ),
                         height: 20,
                         decoration: BoxDecoration(
@@ -380,7 +404,7 @@ class _OrderFragmentScreenState extends State<OrderFragmentScreen> {
                             topLeft: Radius.circular(10),
                             topRight: Radius.circular(10),
                           ),
-                          color: Color.fromARGB(255, 247, 204, 119),
+                          color: Color(0xff6b83bc),
                         ),
                       ),
                       Container(
@@ -389,14 +413,18 @@ class _OrderFragmentScreenState extends State<OrderFragmentScreen> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(
-                                "Order ID # " +
-                                    eachOrderData.order_id.toString(),
-                                style: const TextStyle(
-                                  fontSize: 16,
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.bold,
-                                ),
+                              Row(
+                                children: [
+                                  Text(
+                                    "Order ID # " +
+                                        eachOrderData.order_id.toString(),
+                                    style: const TextStyle(
+                                      fontSize: 16,
+                                      color: Colors.black,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ],
                               ),
                               const SizedBox(
                                 height: 15,

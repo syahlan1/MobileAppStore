@@ -74,6 +74,7 @@ class HomeFragmentScreen extends StatelessWidget {
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(70),
         child: AppBar(
+          automaticallyImplyLeading: false,
           title: showSearchBarWidget(),
           backgroundColor: Colors.transparent,
           elevation: 0.0,
@@ -336,8 +337,31 @@ class HomeFragmentScreen extends StatelessWidget {
             ),
           );
         } else {
-          return const Center(
-            child: Text("Empty, No Data."),
+          return const Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              SizedBox(
+                height: 10,
+              ),
+              Center(
+                child: Column(
+                  children: [
+                    Image(
+                      image: AssetImage("images/icon-kardus-trisakti.png"),
+                      width: 130,
+                    ),
+                    SizedBox(height: 10),
+                    Text(
+                      "Menu kosong nih",
+                      style: TextStyle(
+                        color: Color(0xffbdc3c7),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
           );
         }
       },
@@ -495,8 +519,31 @@ class HomeFragmentScreen extends StatelessWidget {
               },
             );
           } else {
-            return const Center(
-              child: Text("Empty, No Data."),
+            return const Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                SizedBox(
+                  height: 10,
+                ),
+                Center(
+                  child: Column(
+                    children: [
+                      Image(
+                        image: AssetImage("images/icon-kardus-trisakti.png"),
+                        width: 130,
+                      ),
+                      SizedBox(height: 10),
+                      Text(
+                        "Menu kosong nih",
+                        style: TextStyle(
+                          color: Color(0xffbdc3c7),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
             );
           }
         });

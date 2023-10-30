@@ -20,6 +20,11 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
   RxString _status = "new".obs;
   String get status => _status.value;
 
+  NumberFormat formatter = NumberFormat.currency(
+    locale: 'id',
+    symbol: 'Rp',
+  );
+
   updateParcelStatusForUI(String parcelReceived) {
     _status.value = parcelReceived;
   }
@@ -28,17 +33,17 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
     if (widget.clickedOrderInfo!.status == "new") {
       var response = await Get.dialog(
         AlertDialog(
-          backgroundColor: Colors.black,
+          backgroundColor: Colors.white,
           title: Text(
-            "Confirmation",
+            "Konfirmasi",
             style: TextStyle(
-              color: Colors.grey,
+              color: Color(0xff2c3e50),
             ),
           ),
           content: Text(
-            "Have you received parcel?",
+            "Apakah Barang sudah kamu terima?",
             style: TextStyle(
-              color: Colors.grey,
+              color: Color(0xff34495e),
             ),
           ),
           actions: [
@@ -47,17 +52,30 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                 Get.back();
               },
               child: Text(
-                "No",
-                style: TextStyle(color: Colors.redAccent),
+                "Belum",
+                style: TextStyle(
+                  color: Color(0xff6b83bc),
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ),
             TextButton(
               onPressed: () {
                 Get.back(result: "yesConfirmed");
               },
-              child: Text(
-                "Yes",
-                style: TextStyle(color: Colors.green),
+              child: Material(
+                color: Color(0xff6b83bc),
+                borderRadius: BorderRadius.circular(5),
+                child: Padding(
+                  padding: const EdgeInsets.all(12),
+                  child: Text(
+                    "Sudah",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
               ),
             ),
           ],
@@ -97,9 +115,9 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black,
       appBar: AppBar(
-        backgroundColor: Colors.black,
+        backgroundColor: Colors.transparent,
+        elevation: 0.0,
         title: Text(
           DateFormat("dd MMMM, yyyy - hh:mm a")
               .format(widget.clickedOrderInfo!.dateTime!),
@@ -109,7 +127,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
           Padding(
             padding: EdgeInsets.fromLTRB(8, 8, 16, 8),
             child: Material(
-              color: Colors.white30,
+              color: Color(0xffecf0f1),
               borderRadius: BorderRadius.circular(10),
               child: InkWell(
                 onTap: () {
@@ -123,11 +141,11 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                   child: Row(
                     children: [
                       Text(
-                        "Received",
+                        "Diterima",
                         style: TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.bold,
-                          color: Colors.white,
+                          color: Colors.black,
                         ),
                       ),
                       const SizedBox(
@@ -138,7 +156,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                             ? Icon(Icons.help_outline, color: Colors.redAccent)
                             : Icon(
                                 Icons.check_circle_outline,
-                                color: Colors.greenAccent,
+                                color: Colors.green,
                               ),
                       ),
                     ],
@@ -163,7 +181,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
               ),
 
               //phone number
-              showTitleText("Phone Number: "),
+              showTitleText("Nomor Telepon: "),
               const SizedBox(
                 height: 8,
               ),
@@ -174,7 +192,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
               ),
 
               //shipment address
-              showTitleText("Shipment Address: "),
+              showTitleText("Alamat Pengiriman: "),
               const SizedBox(
                 height: 8,
               ),
@@ -185,7 +203,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
               ),
 
               //Delivery
-              showTitleText("Delivery System: "),
+              showTitleText("Pengiriman: "),
               const SizedBox(
                 height: 8,
               ),
@@ -196,7 +214,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
               ),
 
               //Payment
-              showTitleText("Payment System: "),
+              showTitleText("Sistem Pembayaran: "),
               const SizedBox(
                 height: 8,
               ),
@@ -207,7 +225,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
               ),
 
               //note
-              showTitleText("Note to Seller: "),
+              showTitleText("Catata untuk Penjual: "),
               const SizedBox(
                 height: 8,
               ),
@@ -222,14 +240,16 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
               const SizedBox(
                 height: 8,
               ),
-              showContentText(widget.clickedOrderInfo!.totalAmount.toString()),
+              showContentText((formatter
+                  .format(widget.clickedOrderInfo!.totalAmount)
+                  .replaceAll(",00", ""))),
 
               const SizedBox(
                 height: 26,
               ),
 
               //payment proof
-              showTitleText("Proof of Payment/Transaction: "),
+              showTitleText("Bukti Pembayaran/transaksi: "),
               const SizedBox(
                 height: 8,
               ),
@@ -260,7 +280,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
       style: TextStyle(
         fontWeight: FontWeight.bold,
         fontSize: 18,
-        color: Colors.grey,
+        color: Color(0xff2c3e50),
       ),
     );
   }
@@ -269,9 +289,8 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
     return Text(
       contentText,
       style: TextStyle(
-        fontWeight: FontWeight.bold,
         fontSize: 15,
-        color: Colors.white38,
+        color: Color(0xff34495e),
       ),
     );
   }
@@ -286,30 +305,21 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
             jsonDecode(clickedOrderItemsInfo[index]);
 
         return Container(
+          padding: EdgeInsets.all(5),
           margin: EdgeInsets.fromLTRB(16, index == 0 ? 16 : 8, 16,
-              index == clickedOrderItemsInfo.length - 1 ? 16 : 8),
+              index == clickedOrderItemsInfo!.length - 1 ? 16 : 8),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(20),
-            color: Colors.white24,
-            boxShadow: [
-              BoxShadow(
-                offset: Offset(0, 0),
-                blurRadius: 6,
-                color: Colors.black26,
-              ),
-            ],
+            color: Colors.white,
           ),
           child: Row(
             children: [
               //image
               ClipRRect(
-                borderRadius: const BorderRadius.only(
-                  topLeft: Radius.circular(20),
-                  bottomLeft: Radius.circular(20),
-                ),
+                borderRadius: BorderRadius.circular(5),
                 child: FadeInImage(
-                  height: 130,
-                  width: 130,
+                  height: 100,
+                  width: 100,
                   fit: BoxFit.cover,
                   placeholder: const AssetImage("images/place_holder.png"),
                   image: NetworkImage(
@@ -340,13 +350,12 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         style: const TextStyle(
-                          color: Colors.white70,
+                          color: Colors.black,
                           fontSize: 16,
-                          fontWeight: FontWeight.bold,
                         ),
                       ),
 
-                      const SizedBox(height: 10),
+                      const SizedBox(height: 5),
 
                       //size + color
                       Text(
@@ -367,24 +376,32 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                         ),
                       ),
 
-                      const SizedBox(height: 10),
+                      const SizedBox(height: 5),
 
                       //price
                       Text(
-                        itemInfo["price"].toString(),
+                        (formatter
+                            .format(itemInfo["price"])
+                            .replaceAll(",00", "")),
                         overflow: TextOverflow.ellipsis,
                         style: const TextStyle(
                           fontSize: 18,
-                          color: Colors.purpleAccent,
+                          color: Color(0xff2c3e50),
                           fontWeight: FontWeight.bold,
                         ),
                       ),
+
+                      const SizedBox(height: 5),
                       Text(
-                        itemInfo["price"].toString() +
+                        (formatter
+                                .format(itemInfo["price"])
+                                .replaceAll(",00", "")) +
                             " x " +
                             itemInfo["quantity"].toString() +
                             " = " +
-                            itemInfo["totalAmount"].toString(),
+                            (formatter
+                                .format(itemInfo["totalAmount"])
+                                .replaceAll(",00", "")),
                         style: const TextStyle(
                           color: Colors.grey,
                           fontSize: 12,
@@ -402,7 +419,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                   "x" + itemInfo["quantity"].toString(),
                   style: const TextStyle(
                     fontSize: 15,
-                    color: Colors.white,
+                    color: Colors.black,
                   ),
                 ),
               ),
