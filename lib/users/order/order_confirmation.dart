@@ -141,7 +141,6 @@ class OrderConfirmationScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black,
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -149,7 +148,7 @@ class OrderConfirmationScreen extends StatelessWidget {
             //image
             Image.asset(
               "images/transaction.png",
-              width: 160,
+              width: 180,
             ),
 
             const SizedBox(
@@ -160,10 +159,10 @@ class OrderConfirmationScreen extends StatelessWidget {
             const Padding(
               padding: const EdgeInsets.all(8.0),
               child: Text(
-                "Please Attach Transaction \nProof Screenshot image",
+                "Harap Lampirkan Gambar\nScreenshot Bukti Transaksi",
                 textAlign: TextAlign.center,
                 style: TextStyle(
-                  color: Colors.white,
+                  color: Colors.black,
                   fontWeight: FontWeight.bold,
                   fontSize: 16,
                 ),
@@ -176,8 +175,7 @@ class OrderConfirmationScreen extends StatelessWidget {
 
             //select image button
             Material(
-              elevation: 8,
-              color: Colors.purpleAccent,
+              color: Color(0xff575fcf),
               borderRadius: BorderRadius.circular(30),
               child: InkWell(
                 onTap: () {
@@ -216,7 +214,7 @@ class OrderConfirmationScreen extends StatelessWidget {
                         imageSelectedByte,
                         fit: BoxFit.contain,
                       )
-                    : const Placeholder(color: Colors.white60),
+                    : const Placeholder(color: Color(0xff95a5a6)),
               ),
             ),
 
@@ -227,9 +225,8 @@ class OrderConfirmationScreen extends StatelessWidget {
             //confirm and proceed
             Obx(
               () => Material(
-                elevation: 8,
                 color: imageSelectedByte.length > 0
-                    ? Colors.purpleAccent
+                    ? Color(0xff575fcf)
                     : Colors.grey,
                 borderRadius: BorderRadius.circular(30),
                 child: InkWell(
@@ -252,7 +249,7 @@ class OrderConfirmationScreen extends StatelessWidget {
                     child: Text(
                       "Confirmed & proceed",
                       style: TextStyle(
-                        color: Colors.white70,
+                        color: Colors.white,
                         fontSize: 16,
                       ),
                     ),
