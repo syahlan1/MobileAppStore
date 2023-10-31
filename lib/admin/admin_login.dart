@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
+import 'package:store_app/admin/admin_get_all_orders.dart';
 import 'package:store_app/admin/admin_upload_items.dart';
 import 'package:store_app/api_connection/api_connection.dart';
 import 'package:store_app/users/authentication/login_screen.dart';
@@ -43,7 +44,7 @@ class _AdminLoginScreenState extends State<AdminLoginScreen> {
               msg: "Dear Admin, you are logged-in Successfully.");
 
           Future.delayed(Duration(milliseconds: 2000), () {
-            Get.to(AdminUploadItemsScreen());
+            Get.to(AdminGetAllOrdersScreen());
           });
         } else {
           Fluttertoast.showToast(
