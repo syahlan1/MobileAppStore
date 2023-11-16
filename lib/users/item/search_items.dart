@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
+import 'package:liquid_pull_to_refresh/liquid_pull_to_refresh.dart';
 import 'package:store_app/api_connection/api_connection.dart';
 import 'package:store_app/users/cart/cart_list_screen.dart';
 import 'package:store_app/users/item/item_details_screen.dart';
@@ -21,6 +22,11 @@ class SearchItems extends StatefulWidget {
 
 class _SearchItemsState extends State<SearchItems> {
   TextEditingController searchController = TextEditingController();
+
+  Future<void> _handleRefresh() async {
+    await Future.delayed(Duration(seconds: 2));
+    setState(() {});
+  }
 
   NumberFormat formatter = NumberFormat.currency(
     locale: 'id',
@@ -147,174 +153,212 @@ class _SearchItemsState extends State<SearchItems> {
   }
 
   searchItemDesignWidget(context) {
-    return FutureBuilder(
-        future: readSearchRecordFound(),
-        builder: (context, AsyncSnapshot<List<Clothes>> dataSnapShot) {
-          if (dataSnapShot.data!.length > 0) {
-            return Column(
-              children: [
-                SizedBox(
-                  height: 20,
-                ),
-                GridView.builder(
-                  scrollDirection: Axis.vertical,
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                    childAspectRatio: 0.64,
-                  ),
-                  itemCount: dataSnapShot.data!.length,
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  itemBuilder: (context, index) {
-                    Clothes eachClothItemRecord = dataSnapShot.data![index];
-
-                    return Card(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      color: Colors.white,
-                      elevation: 0.0,
-                      margin: EdgeInsets.fromLTRB(
-                        index == 0 ? 16 : 8,
-                        10,
-                        index == dataSnapShot.data!.length - 1 ? 16 : 8,
-                        10,
-                      ),
-                      child: InkWell(
-                        borderRadius: BorderRadius.circular(10),
-                        onTap: () {
-                          Get.to(
-                              ItemDetailsScreen(itemInfo: eachClothItemRecord));
-                        },
-                        child: Container(
-                          width: 185,
-                          child: Column(
-                            children: [
-                              //image clothes
-                              ClipRRect(
-                                borderRadius: const BorderRadius.only(
-                                  topRight: Radius.circular(10),
-                                  topLeft: Radius.circular(10),
-                                ),
-                                child: FadeInImage(
-                                  height: 150,
-                                  width: 185,
-                                  fit: BoxFit.cover,
-                                  placeholder: const AssetImage(
-                                      "images/place_holder.png"),
-                                  image: NetworkImage(
-                                    eachClothItemRecord.image!,
-                                  ),
-                                  imageErrorBuilder:
-                                      (context, error, stackTraceError) {
-                                    return const Center(
-                                      child: Icon(
-                                        Icons.broken_image_outlined,
-                                      ),
-                                    );
-                                  },
-                                ),
-                              ),
-
-                              //name + price
-                              //tags
-                              Expanded(
-                                child: Container(
-                                  width: 180,
-                                  child: Padding(
-                                    padding: const EdgeInsets.fromLTRB(
-                                        10, 10, 10, 0),
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        //name and price
-                                        Expanded(
-                                          child: Text(
-                                            eachClothItemRecord.name!,
-                                            maxLines: 2,
-                                            overflow: TextOverflow.ellipsis,
-                                            style: const TextStyle(
-                                              fontSize: 15,
-                                              color: Colors.black,
-                                            ),
-                                          ),
-                                        ),
-
-                                        //tags
-                                        Expanded(
-                                          child: Text(
-                                            "Tags: \n" +
-                                                eachClothItemRecord.tags
-                                                    .toString()
-                                                    .replaceAll("[", "")
-                                                    .replaceAll("]", ""),
-                                            maxLines: 2,
-                                            overflow: TextOverflow.ellipsis,
-                                            style: const TextStyle(
-                                              fontSize: 12,
-                                              color: Colors.grey,
-                                            ),
-                                          ),
-                                        ),
-
-                                        SizedBox(
-                                          height: 20,
-                                        ),
-
-                                        //price
-                                        Expanded(
-                                          child: Text(
-                                            formatter
-                                                .format(
-                                                    eachClothItemRecord.price)
-                                                .replaceAll(",00", ""),
-                                            overflow: TextOverflow.ellipsis,
-                                            style: const TextStyle(
-                                              fontSize: 16,
-                                              color: Color(0xff575fcf),
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
+    return LiquidPullToRefresh(
+      onRefresh: _handleRefresh,
+      animSpeedFactor: 4,
+      color: Color(0xff6b83bc),
+      showChildOpacityTransition: false,
+      child: FutureBuilder(
+          future: readSearchRecordFound(),
+          builder: (context, AsyncSnapshot<List<Clothes>> dataSnapShot) {
+            if (dataSnapShot.connectionState == ConnectionState.waiting) {
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            }
+            if (dataSnapShot.data == null) {
+              return const Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Center(
+                    child: Column(
+                      children: [
+                        Image(
+                          image: AssetImage("images/icon-kardus-trisakti.png"),
+                          width: 130,
+                        ),
+                        SizedBox(height: 10),
+                        Text(
+                          "Pencarian tidak ditemukan",
+                          style: TextStyle(
+                            color: Color(0xffbdc3c7),
                           ),
                         ),
-                      ),
-                    );
-                  },
-                ),
-              ],
-            );
-          } else {
-            return const Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Center(
-                  child: Column(
-                    children: [
-                      Image(
-                        image: AssetImage("images/icon-kardus-trisakti.png"),
-                        width: 130,
-                      ),
-                      SizedBox(height: 10),
-                      Text(
-                        "Pencarian tidak ditemukan",
-                        style: TextStyle(
-                          color: Color(0xffbdc3c7),
-                        ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
-                ),
-              ],
-            );
-          }
-        });
+                ],
+              );
+            }
+            if (dataSnapShot.data!.length > 0) {
+              return Column(
+                children: [
+                  SizedBox(
+                    height: 20,
+                  ),
+                  Expanded(
+                    child: GridView.builder(
+                      scrollDirection: Axis.vertical,
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2,
+                        childAspectRatio: 0.62,
+                      ),
+                      itemCount: dataSnapShot.data!.length,
+                      shrinkWrap: true,
+                      physics: AlwaysScrollableScrollPhysics(),
+                      itemBuilder: (context, index) {
+                        Clothes eachClothItemRecord = dataSnapShot.data![index];
+
+                        return Card(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          color: Colors.white,
+                          elevation: 0.0,
+                          margin: EdgeInsets.fromLTRB(
+                            index == 0 ? 16 : 8,
+                            10,
+                            index == dataSnapShot.data!.length - 1 ? 16 : 8,
+                            10,
+                          ),
+                          child: InkWell(
+                            borderRadius: BorderRadius.circular(10),
+                            onTap: () {
+                              Get.to(ItemDetailsScreen(
+                                  itemInfo: eachClothItemRecord));
+                            },
+                            child: Container(
+                              width: 185,
+                              child: Column(
+                                children: [
+                                  //image clothes
+                                  ClipRRect(
+                                    borderRadius: const BorderRadius.only(
+                                      topRight: Radius.circular(10),
+                                      topLeft: Radius.circular(10),
+                                    ),
+                                    child: FadeInImage(
+                                      height: 150,
+                                      width: 185,
+                                      fit: BoxFit.cover,
+                                      placeholder: const AssetImage(
+                                          "images/place_holder.png"),
+                                      image: NetworkImage(
+                                        eachClothItemRecord.image!,
+                                      ),
+                                      imageErrorBuilder:
+                                          (context, error, stackTraceError) {
+                                        return const Center(
+                                          child: Icon(
+                                            Icons.broken_image_outlined,
+                                          ),
+                                        );
+                                      },
+                                    ),
+                                  ),
+
+                                  //name + price
+                                  //tags
+                                  Expanded(
+                                    child: Container(
+                                      width: 180,
+                                      child: Padding(
+                                        padding: const EdgeInsets.fromLTRB(
+                                            10, 10, 10, 0),
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            //name and price
+                                            Expanded(
+                                              child: Text(
+                                                eachClothItemRecord.name!,
+                                                maxLines: 2,
+                                                overflow: TextOverflow.ellipsis,
+                                                style: const TextStyle(
+                                                  fontSize: 15,
+                                                  color: Colors.black,
+                                                ),
+                                              ),
+                                            ),
+
+                                            //tags
+                                            Expanded(
+                                              child: Text(
+                                                "Tags: \n" +
+                                                    eachClothItemRecord.tags
+                                                        .toString()
+                                                        .replaceAll("[", "")
+                                                        .replaceAll("]", ""),
+                                                maxLines: 2,
+                                                overflow: TextOverflow.ellipsis,
+                                                style: const TextStyle(
+                                                  fontSize: 12,
+                                                  color: Colors.grey,
+                                                ),
+                                              ),
+                                            ),
+
+                                            SizedBox(
+                                              height: 20,
+                                            ),
+
+                                            //price
+                                            Expanded(
+                                              child: Text(
+                                                formatter
+                                                    .format(eachClothItemRecord
+                                                        .price)
+                                                    .replaceAll(",00", ""),
+                                                overflow: TextOverflow.ellipsis,
+                                                style: const TextStyle(
+                                                  fontSize: 16,
+                                                  color: Color(0xff575fcf),
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                ],
+              );
+            } else {
+              return const Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Center(
+                    child: Column(
+                      children: [
+                        Image(
+                          image: AssetImage("images/icon-kardus-trisakti.png"),
+                          width: 130,
+                        ),
+                        SizedBox(height: 10),
+                        Text(
+                          "Pencarian tidak ditemukan",
+                          style: TextStyle(
+                            color: Color(0xffbdc3c7),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              );
+            }
+          }),
+    );
   }
 }

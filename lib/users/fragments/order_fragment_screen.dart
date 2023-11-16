@@ -10,6 +10,7 @@ import 'package:http/http.dart' as http;
 import 'package:store_app/users/order/order_details.dart';
 import 'package:store_app/users/userPreferences/current_user.dart';
 import 'package:intl/intl.dart';
+import 'package:liquid_pull_to_refresh/liquid_pull_to_refresh.dart';
 
 class OrderFragmentScreen extends StatefulWidget {
   @override
@@ -22,6 +23,11 @@ class _OrderFragmentScreenState extends State<OrderFragmentScreen> {
     locale: 'id',
     symbol: 'Rp',
   );
+
+  Future<void> _handleRefresh() async {
+    await Future.delayed(Duration(seconds: 2));
+    setState(() {});
+  }
 
   Future<List<Order>> getCurrentUserOrdersList() async {
     List<Order> ordersListOfCurrentUser = [];
@@ -86,6 +92,7 @@ class _OrderFragmentScreenState extends State<OrderFragmentScreen> {
       length: 2,
       child: Scaffold(
         appBar: AppBar(
+          automaticallyImplyLeading: false,
           title: Text(
             'Pesanan Saya',
             style: TextStyle(
@@ -117,416 +124,433 @@ class _OrderFragmentScreenState extends State<OrderFragmentScreen> {
 
   //diproses
   displayOrdersList(context) {
-    return FutureBuilder(
-      future: getCurrentUserOrdersList(),
-      builder: (context, AsyncSnapshot<List<Order>> dataSnapshot) {
-        if (dataSnapshot.connectionState == ConnectionState.waiting) {
-          return Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: const [
-              Center(
-                child: Text(
-                  "Connection Waiting...",
-                  style: TextStyle(color: Colors.white),
+    return LiquidPullToRefresh(
+      onRefresh: _handleRefresh,
+      animSpeedFactor: 4,
+      color: Color(0xff6b83bc),
+      showChildOpacityTransition: false,
+      child: FutureBuilder(
+        future: getCurrentUserOrdersList(),
+        builder: (context, AsyncSnapshot<List<Order>> dataSnapshot) {
+          if (dataSnapshot.connectionState == ConnectionState.waiting) {
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: const [
+                Center(
+                  child: Text(
+                    "Connection Waiting...",
+                    style: TextStyle(color: Colors.white),
+                  ),
                 ),
-              ),
-              Center(
-                child: CircularProgressIndicator(),
-              ),
-            ],
-          );
-        }
-        if (dataSnapshot.data == null) {
-          return Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: const [
-              Center(
-                child: Text(
-                  "No Order found yet",
-                  style: TextStyle(color: Colors.white),
+                Center(
+                  child: CircularProgressIndicator(),
                 ),
-              ),
-              Center(
-                child: CircularProgressIndicator(),
-              ),
-            ],
-          );
-        }
-        if (dataSnapshot.data!.isNotEmpty) {
-          List<Order> orderList = dataSnapshot.data!;
+              ],
+            );
+          }
+          if (dataSnapshot.data == null) {
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: const [
+                Center(
+                  child: Text(
+                    "No Order found yet",
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ),
+                Center(
+                  child: CircularProgressIndicator(),
+                ),
+              ],
+            );
+          }
+          if (dataSnapshot.data!.isNotEmpty) {
+            List<Order> orderList = dataSnapshot.data!;
 
-          return ListView.separated(
-            separatorBuilder: (context, index) {
-              return Divider(
-                height: 1,
-                thickness: 1,
-              );
-            },
-            itemCount: orderList.length,
-            itemBuilder: (context, index) {
-              Order eachOrderData = orderList[index];
+            return ListView.separated(
+              separatorBuilder: (context, index) {
+                return Divider(
+                  height: 1,
+                  thickness: 1,
+                );
+              },
+              itemCount: orderList.length,
+              itemBuilder: (context, index) {
+                Order eachOrderData = orderList[index];
 
-              return Card(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                margin: EdgeInsets.fromLTRB(
-                  index == 0 ? 16 : 8,
-                  10,
-                  index == dataSnapshot.data!.length - 1 ? 16 : 8,
-                  10,
-                ),
-                color: Colors.white,
-                elevation: 0,
-                child: InkWell(
-                  borderRadius: BorderRadius.circular(10),
-                  onTap: () {
-                    Get.to(OrderDetailsScreen(clickedOrderInfo: eachOrderData));
-                  },
-                  child: Container(
-                    child: Padding(
-                      padding: const EdgeInsets.all(20),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                "Order ID # " +
-                                    eachOrderData.order_id.toString(),
-                                style: const TextStyle(
-                                  fontSize: 16,
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              Material(
-                                color: Color(0xfffff59D),
-                                borderRadius: BorderRadius.circular(5),
-                                child: Padding(
-                                  padding: EdgeInsets.all(5),
-                                  child: Text(
-                                    "Diproses",
-                                    style: TextStyle(
-                                        color: Colors.orange,
-                                        fontWeight: FontWeight.bold),
+                return Card(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  margin: EdgeInsets.fromLTRB(
+                    index == 0 ? 16 : 8,
+                    10,
+                    index == dataSnapshot.data!.length - 1 ? 16 : 8,
+                    10,
+                  ),
+                  color: Colors.white,
+                  elevation: 0,
+                  child: InkWell(
+                    borderRadius: BorderRadius.circular(10),
+                    onTap: () {
+                      Get.to(
+                          OrderDetailsScreen(clickedOrderInfo: eachOrderData));
+                    },
+                    child: Container(
+                      child: Padding(
+                        padding: const EdgeInsets.all(20),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  "Order ID # " +
+                                      eachOrderData.order_id.toString(),
+                                  style: const TextStyle(
+                                    fontSize: 16,
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.bold,
                                   ),
                                 ),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(
-                            height: 15,
-                          ),
-                          Row(
-                            children: [
-                              //date
-                              //time
-                              Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    DateFormat("dd MMMM, yyyy")
-                                        .format(eachOrderData.dateTime!),
-                                    style: TextStyle(
-                                      color: Colors.grey,
-                                      fontSize: 12,
+                                Material(
+                                  color: Color(0xfffff59D),
+                                  borderRadius: BorderRadius.circular(5),
+                                  child: Padding(
+                                    padding: EdgeInsets.all(5),
+                                    child: Text(
+                                      "Diproses",
+                                      style: TextStyle(
+                                          color: Colors.orange,
+                                          fontWeight: FontWeight.bold),
                                     ),
                                   ),
-                                  const SizedBox(
-                                    height: 4,
-                                  ),
-                                  Text(
-                                    "pukul " +
-                                        DateFormat("hh:mm")
-                                            .format(eachOrderData.dateTime!),
-                                    style: TextStyle(
-                                      color: Colors.grey,
-                                      fontSize: 12,
+                                ),
+                              ],
+                            ),
+                            const SizedBox(
+                              height: 15,
+                            ),
+                            Row(
+                              children: [
+                                //date
+                                //time
+                                Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      DateFormat("dd MMMM, yyyy")
+                                          .format(eachOrderData.dateTime!),
+                                      style: TextStyle(
+                                        color: Colors.grey,
+                                        fontSize: 12,
+                                      ),
                                     ),
-                                  ),
-                                ],
-                              ),
+                                    const SizedBox(
+                                      height: 4,
+                                    ),
+                                    Text(
+                                      "pukul " +
+                                          DateFormat("hh:mm")
+                                              .format(eachOrderData.dateTime!),
+                                      style: TextStyle(
+                                        color: Colors.grey,
+                                        fontSize: 12,
+                                      ),
+                                    ),
+                                  ],
+                                ),
 
-                              Spacer(),
+                                Spacer(),
 
-                              Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.end,
-                                children: [
-                                  Text(
-                                    "Total Pembelian",
-                                    style: const TextStyle(
-                                      fontSize: 13,
-                                      color: Colors.grey,
+                                Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.end,
+                                  children: [
+                                    Text(
+                                      "Total Pembelian",
+                                      style: const TextStyle(
+                                        fontSize: 13,
+                                        color: Colors.grey,
+                                      ),
                                     ),
-                                  ),
-                                  const SizedBox(
-                                    height: 5,
-                                  ),
-                                  Text(
-                                    (formatter
-                                        .format(eachOrderData.totalAmount)
-                                        .replaceAll(",00", "")),
-                                    style: const TextStyle(
-                                      fontSize: 17,
-                                      color: Color(0xff575fcf),
-                                      fontWeight: FontWeight.bold,
+                                    const SizedBox(
+                                      height: 5,
                                     ),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ],
+                                    Text(
+                                      (formatter
+                                          .format(eachOrderData.totalAmount)
+                                          .replaceAll(",00", "")),
+                                      style: const TextStyle(
+                                        fontSize: 17,
+                                        color: Color(0xff575fcf),
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ),
-                ),
-              );
-            },
-          );
-        } else {
-          return const Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Center(
-                child: Column(
-                  children: [
-                    Image(
-                      image: AssetImage("images/icon-kardus-trisakti.png"),
-                      width: 130,
-                    ),
-                    SizedBox(height: 10),
-                    Text(
-                      "Menu kosong nih",
-                      style: TextStyle(
-                        color: Color(0xffbdc3c7),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          );
-        }
-      },
-    );
-  }
-
-  //selesai
-  displayReceivedOrdersList(context) {
-    return FutureBuilder(
-      future: getCurrentUserReceivedOrdersList(),
-      builder: (context, AsyncSnapshot<List<Order>> dataSnapshot) {
-        if (dataSnapshot.connectionState == ConnectionState.waiting) {
-          return Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: const [
-              Center(
-                child: Text(
-                  "Connection Waiting...",
-                  style: TextStyle(color: Colors.white),
-                ),
-              ),
-              Center(
-                child: CircularProgressIndicator(),
-              ),
-            ],
-          );
-        }
-        if (dataSnapshot.data == null) {
-          return Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: const [
-              Center(
-                child: Text(
-                  "No Order found yet",
-                  style: TextStyle(color: Colors.white),
-                ),
-              ),
-              Center(
-                child: CircularProgressIndicator(),
-              ),
-            ],
-          );
-        }
-        if (dataSnapshot.data!.isNotEmpty) {
-          List<Order> orderList = dataSnapshot.data!;
-
-          return ListView.separated(
-            separatorBuilder: (context, index) {
-              return Divider(
-                height: 1,
-                thickness: 1,
-              );
-            },
-            itemCount: orderList.length,
-            itemBuilder: (context, index) {
-              Order eachOrderData = orderList[index];
-
-              return Card(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                margin: EdgeInsets.fromLTRB(
-                  index == 0 ? 16 : 8,
-                  10,
-                  index == dataSnapshot.data!.length - 1 ? 16 : 8,
-                  10,
-                ),
-                color: Colors.white,
-                elevation: 0,
-                child: InkWell(
-                  borderRadius: BorderRadius.circular(10),
-                  onTap: () {
-                    Get.to(OrderDetailsScreen(clickedOrderInfo: eachOrderData));
-                  },
+                );
+              },
+            );
+          } else {
+            return const Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Center(
                   child: Column(
                     children: [
-                      Container(
-                        child: Center(
-                          child: Text(
-                            "Selesai",
-                            style: TextStyle(
-                              color: Colors.white,
-                            ),
-                          ),
-                        ),
-                        height: 20,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(10),
-                            topRight: Radius.circular(10),
-                          ),
-                          color: Color(0xff6b83bc),
-                        ),
+                      Image(
+                        image: AssetImage("images/icon-kardus-trisakti.png"),
+                        width: 130,
                       ),
-                      Container(
-                        child: Padding(
-                          padding: const EdgeInsets.all(20),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                children: [
-                                  Text(
-                                    "Order ID # " +
-                                        eachOrderData.order_id.toString(),
-                                    style: const TextStyle(
-                                      fontSize: 16,
-                                      color: Colors.black,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              const SizedBox(
-                                height: 15,
-                              ),
-                              Row(
-                                children: [
-                                  //date
-                                  //time
-                                  Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        DateFormat("dd MMMM, yyyy")
-                                            .format(eachOrderData.dateTime!),
-                                        style: TextStyle(
-                                          color: Colors.grey,
-                                          fontSize: 12,
-                                        ),
-                                      ),
-                                      const SizedBox(
-                                        height: 4,
-                                      ),
-                                      Text(
-                                        "pukul " +
-                                            DateFormat("hh:mm").format(
-                                                eachOrderData.dateTime!),
-                                        style: TextStyle(
-                                          color: Colors.grey,
-                                          fontSize: 12,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-
-                                  Spacer(),
-
-                                  Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    crossAxisAlignment: CrossAxisAlignment.end,
-                                    children: [
-                                      Text(
-                                        "Total Pembelian",
-                                        style: const TextStyle(
-                                          fontSize: 13,
-                                          color: Colors.grey,
-                                        ),
-                                      ),
-                                      const SizedBox(
-                                        height: 5,
-                                      ),
-                                      Text(
-                                        (formatter
-                                            .format(eachOrderData.totalAmount)
-                                            .replaceAll(",00", "")),
-                                        style: const TextStyle(
-                                          fontSize: 17,
-                                          color: Color(0xff575fcf),
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
+                      SizedBox(height: 10),
+                      Text(
+                        "Menu kosong nih",
+                        style: TextStyle(
+                          color: Color(0xffbdc3c7),
                         ),
                       ),
                     ],
                   ),
                 ),
-              );
-            },
-          );
-        } else {
-          return const Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Center(
-                child: Column(
-                  children: [
-                    Image(
-                      image: AssetImage("images/icon-kardus-trisakti.png"),
-                      width: 130,
-                    ),
-                    SizedBox(height: 10),
-                    Text(
-                      "Menu kosong nih",
-                      style: TextStyle(
-                        color: Color(0xffbdc3c7),
-                      ),
-                    ),
-                  ],
+              ],
+            );
+          }
+        },
+      ),
+    );
+  }
+
+  //selesai
+  displayReceivedOrdersList(context) {
+    return LiquidPullToRefresh(
+      onRefresh: _handleRefresh,
+      animSpeedFactor: 4,
+      color: Color(0xff6b83bc),
+      showChildOpacityTransition: false,
+      child: FutureBuilder(
+        future: getCurrentUserReceivedOrdersList(),
+        builder: (context, AsyncSnapshot<List<Order>> dataSnapshot) {
+          if (dataSnapshot.connectionState == ConnectionState.waiting) {
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: const [
+                Center(
+                  child: Text(
+                    "Connection Waiting...",
+                    style: TextStyle(color: Colors.white),
+                  ),
                 ),
-              ),
-            ],
-          );
-        }
-      },
+                Center(
+                  child: CircularProgressIndicator(),
+                ),
+              ],
+            );
+          }
+          if (dataSnapshot.data == null) {
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: const [
+                Center(
+                  child: Text(
+                    "No Order found yet",
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ),
+                Center(
+                  child: CircularProgressIndicator(),
+                ),
+              ],
+            );
+          }
+          if (dataSnapshot.data!.isNotEmpty) {
+            List<Order> orderList = dataSnapshot.data!;
+
+            return ListView.separated(
+              separatorBuilder: (context, index) {
+                return Divider(
+                  height: 1,
+                  thickness: 1,
+                );
+              },
+              itemCount: orderList.length,
+              itemBuilder: (context, index) {
+                Order eachOrderData = orderList[index];
+
+                return Card(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  margin: EdgeInsets.fromLTRB(
+                    index == 0 ? 16 : 8,
+                    10,
+                    index == dataSnapshot.data!.length - 1 ? 16 : 8,
+                    10,
+                  ),
+                  color: Colors.white,
+                  elevation: 0,
+                  child: InkWell(
+                    borderRadius: BorderRadius.circular(10),
+                    onTap: () {
+                      Get.to(
+                          OrderDetailsScreen(clickedOrderInfo: eachOrderData));
+                    },
+                    child: Column(
+                      children: [
+                        Container(
+                          child: Center(
+                            child: Text(
+                              "Selesai",
+                              style: TextStyle(
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                          height: 20,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(10),
+                              topRight: Radius.circular(10),
+                            ),
+                            color: Color(0xff6b83bc),
+                          ),
+                        ),
+                        Container(
+                          child: Padding(
+                            padding: const EdgeInsets.all(20),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  children: [
+                                    Text(
+                                      "Order ID # " +
+                                          eachOrderData.order_id.toString(),
+                                      style: const TextStyle(
+                                        fontSize: 16,
+                                        color: Colors.black,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(
+                                  height: 15,
+                                ),
+                                Row(
+                                  children: [
+                                    //date
+                                    //time
+                                    Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          DateFormat("dd MMMM, yyyy")
+                                              .format(eachOrderData.dateTime!),
+                                          style: TextStyle(
+                                            color: Colors.grey,
+                                            fontSize: 12,
+                                          ),
+                                        ),
+                                        const SizedBox(
+                                          height: 4,
+                                        ),
+                                        Text(
+                                          "pukul " +
+                                              DateFormat("hh:mm").format(
+                                                  eachOrderData.dateTime!),
+                                          style: TextStyle(
+                                            color: Colors.grey,
+                                            fontSize: 12,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+
+                                    Spacer(),
+
+                                    Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.end,
+                                      children: [
+                                        Text(
+                                          "Total Pembelian",
+                                          style: const TextStyle(
+                                            fontSize: 13,
+                                            color: Colors.grey,
+                                          ),
+                                        ),
+                                        const SizedBox(
+                                          height: 5,
+                                        ),
+                                        Text(
+                                          (formatter
+                                              .format(eachOrderData.totalAmount)
+                                              .replaceAll(",00", "")),
+                                          style: const TextStyle(
+                                            fontSize: 17,
+                                            color: Color(0xff575fcf),
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              },
+            );
+          } else {
+            return const Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Center(
+                  child: Column(
+                    children: [
+                      Image(
+                        image: AssetImage("images/icon-kardus-trisakti.png"),
+                        width: 130,
+                      ),
+                      SizedBox(height: 10),
+                      Text(
+                        "Menu kosong nih",
+                        style: TextStyle(
+                          color: Color(0xffbdc3c7),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            );
+          }
+        },
+      ),
     );
   }
 }

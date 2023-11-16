@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
+import 'package:liquid_pull_to_refresh/liquid_pull_to_refresh.dart';
 import 'package:store_app/api_connection/api_connection.dart';
 import 'package:http/http.dart' as http;
 import 'package:store_app/users/cart/cart_list_screen.dart';
@@ -26,6 +27,13 @@ class _FavoritesFragmentScreenState extends State<FavoritesFragmentScreen> {
     locale: 'id',
     symbol: 'Rp',
   );
+
+  Future<void> _handleRefresh() async {
+    await Future.delayed(Duration(seconds: 2));
+    setState(() {
+      favoriteListDesignWidget(context);
+    });
+  }
 
   Future<List<Favorite>> getCurrentUserFavoriteList() async {
     List<Favorite> favoriteListOfCurrentUser = [];
@@ -60,6 +68,7 @@ class _FavoritesFragmentScreenState extends State<FavoritesFragmentScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         title: Text(
           'Favorites',
           style: TextStyle(
@@ -80,15 +89,22 @@ class _FavoritesFragmentScreenState extends State<FavoritesFragmentScreen> {
         backgroundColor: Colors.transparent,
         elevation: 0.0,
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const SizedBox(height: 25),
+      body: LiquidPullToRefresh(
+        onRefresh: _handleRefresh,
+        animSpeedFactor: 4,
+        color: Color(0xff6b83bc),
+        showChildOpacityTransition: false,
+        child: SingleChildScrollView(
+          physics: AlwaysScrollableScrollPhysics(),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const SizedBox(height: 25),
 
-            //displaying favorite list
-            favoriteListDesignWidget(context),
-          ],
+              //displaying favorite list
+              favoriteListDesignWidget(context),
+            ],
+          ),
         ),
       ),
     );
@@ -195,7 +211,7 @@ class _FavoritesFragmentScreenState extends State<FavoritesFragmentScreen> {
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    //name and price
+                                    //name and price1
                                     Expanded(
                                       child: Text(
                                         eachFavoriteItemRecord.name!,

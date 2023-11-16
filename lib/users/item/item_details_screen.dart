@@ -11,6 +11,7 @@ import 'package:store_app/users/model/clothes.dart';
 import 'package:store_app/users/userPreferences/current_user.dart';
 import 'package:intl/intl.dart';
 import '../../api_connection/api_connection.dart';
+import 'package:photo_view/photo_view.dart';
 
 class ItemDetailsScreen extends StatefulWidget {
   final Clothes? itemInfo;
@@ -163,20 +164,27 @@ class _ItemDetailsScreenState extends State<ItemDetailsScreen> {
       body: Stack(
         children: [
           //item image
-          FadeInImage(
-            height: MediaQuery.of(context).size.height * 0.5,
-            width: MediaQuery.of(context).size.width,
-            fit: BoxFit.cover,
-            placeholder: const AssetImage("images/place_holder.png"),
-            image: NetworkImage(
-              widget.itemInfo!.image!,
+          GestureDetector(
+            child: FadeInImage(
+              height: MediaQuery.of(context).size.height * 0.5,
+              width: MediaQuery.of(context).size.width,
+              fit: BoxFit.cover,
+              placeholder: const AssetImage("images/place_holder.png"),
+              image: NetworkImage(
+                widget.itemInfo!.image!,
+              ),
+              imageErrorBuilder: (context, error, stackTraceError) {
+                return const Center(
+                  child: Icon(
+                    Icons.broken_image_outlined,
+                  ),
+                );
+              },
             ),
-            imageErrorBuilder: (context, error, stackTraceError) {
-              return const Center(
-                child: Icon(
-                  Icons.broken_image_outlined,
-                ),
-              );
+            onTap: () {
+              Navigator.push(context, MaterialPageRoute(builder: (_) {
+                return DetailPicture(itemInfo: widget.itemInfo);
+              }));
             },
           ),
 
@@ -203,6 +211,9 @@ class _ItemDetailsScreenState extends State<ItemDetailsScreen> {
                     icon: const Icon(
                       Icons.arrow_back,
                       color: Colors.white,
+                      shadows: <Shadow>[
+                        Shadow(color: Colors.grey, blurRadius: 15.0)
+                      ],
                     ),
                   ),
 
@@ -224,6 +235,9 @@ class _ItemDetailsScreenState extends State<ItemDetailsScreen> {
                               ? Icons.favorite
                               : Icons.favorite_outline,
                           color: Colors.white,
+                          shadows: <Shadow>[
+                            Shadow(color: Colors.grey, blurRadius: 15.0)
+                          ],
                         ),
                       )),
 
@@ -235,6 +249,9 @@ class _ItemDetailsScreenState extends State<ItemDetailsScreen> {
                     icon: const Icon(
                       Icons.shopping_cart,
                       color: Colors.white,
+                      shadows: <Shadow>[
+                        Shadow(color: Colors.grey, blurRadius: 15.0)
+                      ],
                     ),
                   ),
                 ],
@@ -575,6 +592,41 @@ class _ItemDetailsScreenState extends State<ItemDetailsScreen> {
 
             const SizedBox(height: 30),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+class DetailPicture extends StatelessWidget {
+  final Clothes? itemInfo;
+
+  DetailPicture({
+    this.itemInfo,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.black,
+      appBar: AppBar(
+        elevation: 0.0,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.white),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
+        backgroundColor: Colors.transparent,
+      ),
+      body: Container(
+        width: double.infinity,
+        child: Center(
+          child: PhotoView(
+            imageProvider: NetworkImage(
+              itemInfo!.image!,
+            ),
+            minScale: PhotoViewComputedScale.contained * 1,
+            maxScale: PhotoViewComputedScale.covered * 2,
+          ),
         ),
       ),
     );

@@ -12,6 +12,7 @@ import 'package:store_app/users/model/clothes.dart';
 import 'package:store_app/users/order/order_now_screen.dart';
 import 'package:store_app/users/userPreferences/current_user.dart';
 import 'package:intl/intl.dart';
+import 'package:liquid_pull_to_refresh/liquid_pull_to_refresh.dart';
 
 class CartListScreen extends StatefulWidget {
   @override
@@ -25,6 +26,11 @@ class _CartListScreenState extends State<CartListScreen> {
     locale: 'id',
     symbol: 'Rp',
   );
+
+  Future<void> _handleRefresh() async {
+    await Future.delayed(Duration(seconds: 2));
+    setState(() {});
+  }
 
   getCurrentUserCartList() async {
     List<Cart> cartListOfCurrentUser = [];
@@ -188,6 +194,7 @@ class _CartListScreenState extends State<CartListScreen> {
                             TextButton(
                               onPressed: () {
                                 Get.back(result: "yesDelete");
+                                setState(() {});
                               },
                               child: const Text(
                                 "Yes",
@@ -248,254 +255,264 @@ class _CartListScreenState extends State<CartListScreen> {
           ),
         ],
       ),
-      body: Obx(
-        () => cartListController.cartList.length > 0
-            ? ListView.builder(
-                itemCount: cartListController.cartList.length,
-                scrollDirection: Axis.vertical,
-                itemBuilder: (context, index) {
-                  Cart cartModel = cartListController.cartList[index];
+      body: LiquidPullToRefresh(
+        onRefresh: _handleRefresh,
+        animSpeedFactor: 4,
+        color: Color(0xff6b83bc),
+        showChildOpacityTransition: false,
+        child: Obx(
+          () => cartListController.cartList.length > 0
+              ? ListView.builder(
+                  itemCount: cartListController.cartList.length,
+                  scrollDirection: Axis.vertical,
+                  itemBuilder: (context, index) {
+                    Cart cartModel = cartListController.cartList[index];
 
-                  Clothes clothesModel = Clothes(
-                    item_id: cartModel.item_id,
-                    colors: cartModel.colors,
-                    image: cartModel.image,
-                    name: cartModel.name,
-                    price: cartModel.price,
-                    rating: cartModel.rating,
-                    sizes: cartModel.sizes,
-                    description: cartModel.description,
-                    tags: cartModel.tags,
-                  );
+                    Clothes clothesModel = Clothes(
+                      item_id: cartModel.item_id,
+                      colors: cartModel.colors,
+                      image: cartModel.image,
+                      name: cartModel.name,
+                      price: cartModel.price,
+                      rating: cartModel.rating,
+                      sizes: cartModel.sizes,
+                      description: cartModel.description,
+                      tags: cartModel.tags,
+                    );
 
-                  return SizedBox(
-                    width: MediaQuery.of(context).size.width,
-                    child: Row(
-                      children: [
-                        //check box
-                        GetBuilder(
-                          init: CartListController(),
-                          builder: (c) {
-                            return IconButton(
-                              onPressed: () {
-                                if (cartListController.selectedItemList
-                                    .contains(cartModel.cart_id)) {
-                                  cartListController
-                                      .deleteSelectedItem(cartModel.cart_id!);
-                                } else {
-                                  cartListController
-                                      .addSelectedItem(cartModel.cart_id!);
-                                }
+                    return SizedBox(
+                      width: MediaQuery.of(context).size.width,
+                      child: Row(
+                        children: [
+                          //check box
+                          GetBuilder(
+                            init: CartListController(),
+                            builder: (c) {
+                              return IconButton(
+                                onPressed: () {
+                                  if (cartListController.selectedItemList
+                                      .contains(cartModel.cart_id)) {
+                                    cartListController
+                                        .deleteSelectedItem(cartModel.cart_id!);
+                                  } else {
+                                    cartListController
+                                        .addSelectedItem(cartModel.cart_id!);
+                                  }
 
-                                calculateTotalAmount();
-                              },
-                              icon: Icon(
-                                cartListController.selectedItemList
-                                        .contains(cartModel.cart_id)
-                                    ? Icons.check_box
-                                    : Icons.check_box_outline_blank,
-                                color: cartListController.isSelectedAll
-                                    ? Color(0xff575fcf)
-                                    : Colors.grey,
-                              ),
-                            );
-                          },
-                        ),
-
-                        //name
-                        //color size + price
-                        //+ 2 -
-                        //image
-                        Expanded(
-                          child: GestureDetector(
-                            onTap: () {
-                              Get.to(ItemDetailsScreen(itemInfo: clothesModel));
+                                  calculateTotalAmount();
+                                },
+                                icon: Icon(
+                                  cartListController.selectedItemList
+                                          .contains(cartModel.cart_id)
+                                      ? Icons.check_box
+                                      : Icons.check_box_outline_blank,
+                                  color: cartListController.isSelectedAll
+                                      ? Color(0xff575fcf)
+                                      : Colors.grey,
+                                ),
+                              );
                             },
-                            child: Container(
-                              margin: EdgeInsets.fromLTRB(
-                                0,
-                                index == 0 ? 16 : 8,
-                                16,
-                                index == cartListController.cartList.length - 1
-                                    ? 16
-                                    : 8,
-                              ),
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(10),
-                                color: Colors.white,
-                              ),
-                              child: Row(
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: ClipRRect(
-                                      borderRadius: BorderRadius.circular(5),
-                                      child: FadeInImage(
-                                        height: 110,
-                                        width: 110,
-                                        fit: BoxFit.cover,
-                                        placeholder: const AssetImage(
-                                            "images/place_holder.png"),
-                                        image: NetworkImage(
-                                          cartModel.image!,
+                          ),
+
+                          //name
+                          //color size + price
+                          //+ 2 -
+                          //image
+                          Expanded(
+                            child: GestureDetector(
+                              onTap: () {
+                                Get.to(
+                                    ItemDetailsScreen(itemInfo: clothesModel));
+                              },
+                              child: Container(
+                                margin: EdgeInsets.fromLTRB(
+                                  0,
+                                  index == 0 ? 16 : 8,
+                                  16,
+                                  index ==
+                                          cartListController.cartList.length - 1
+                                      ? 16
+                                      : 8,
+                                ),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(10),
+                                  color: Colors.white,
+                                ),
+                                child: Row(
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: ClipRRect(
+                                        borderRadius: BorderRadius.circular(5),
+                                        child: FadeInImage(
+                                          height: 110,
+                                          width: 110,
+                                          fit: BoxFit.cover,
+                                          placeholder: const AssetImage(
+                                              "images/place_holder.png"),
+                                          image: NetworkImage(
+                                            cartModel.image!,
+                                          ),
+                                          imageErrorBuilder: (context, error,
+                                              stackTraceError) {
+                                            return const Center(
+                                              child: Icon(
+                                                Icons.broken_image_outlined,
+                                              ),
+                                            );
+                                          },
                                         ),
-                                        imageErrorBuilder:
-                                            (context, error, stackTraceError) {
-                                          return const Center(
-                                            child: Icon(
-                                              Icons.broken_image_outlined,
-                                            ),
-                                          );
-                                        },
                                       ),
                                     ),
-                                  ),
-                                  //name
-                                  //color size + price
-                                  //+ 2 -
-                                  Expanded(
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(10),
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          //name
-                                          Text(
-                                            clothesModel.name.toString(),
-                                            maxLines: 1,
-                                            overflow: TextOverflow.ellipsis,
-                                            style: const TextStyle(
-                                              fontSize: 17,
-                                              color: Color(0xff2c3e50),
-                                            ),
-                                          ),
-
-                                          const SizedBox(height: 5),
-
-                                          //color size + price
-                                          Text(
-                                            "${cartModel.color!.replaceAll('[', '').replaceAll(']', '')}" +
-                                                "\n" +
-                                                "${cartModel.size!.replaceAll('[', '').replaceAll(']', '')}",
-                                            maxLines: 3,
-                                            overflow: TextOverflow.ellipsis,
-                                            style: const TextStyle(
-                                              color: Colors.grey,
-                                              fontSize: 13,
-                                            ),
-                                          ),
-                                          const SizedBox(height: 5),
-                                          Container(
-                                            alignment: Alignment.bottomLeft,
-                                            child: Text(
-                                              (formatter
-                                                  .format(clothesModel.price)
-                                                  .replaceAll(",00", "")),
+                                    //name
+                                    //color size + price
+                                    //+ 2 -
+                                    Expanded(
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(10),
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            //name
+                                            Text(
+                                              clothesModel.name.toString(),
+                                              maxLines: 1,
+                                              overflow: TextOverflow.ellipsis,
                                               style: const TextStyle(
                                                 fontSize: 17,
-                                                color: Colors.orange,
-                                                fontWeight: FontWeight.bold,
+                                                color: Color(0xff2c3e50),
                                               ),
                                             ),
-                                          ),
 
-                                          //+ 2 -
-                                          Row(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.center,
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.end,
-                                            children: [
-                                              //-
-                                              IconButton(
-                                                onPressed: () {
-                                                  if (cartModel.quantity! - 1 >=
-                                                      1) {
+                                            const SizedBox(height: 5),
+
+                                            //color size + price
+                                            Text(
+                                              "${cartModel.color!.replaceAll('[', '').replaceAll(']', '')}" +
+                                                  "\n" +
+                                                  "${cartModel.size!.replaceAll('[', '').replaceAll(']', '')}",
+                                              maxLines: 3,
+                                              overflow: TextOverflow.ellipsis,
+                                              style: const TextStyle(
+                                                color: Colors.grey,
+                                                fontSize: 13,
+                                              ),
+                                            ),
+                                            const SizedBox(height: 5),
+                                            Container(
+                                              alignment: Alignment.bottomLeft,
+                                              child: Text(
+                                                (formatter
+                                                    .format(clothesModel.price)
+                                                    .replaceAll(",00", "")),
+                                                style: const TextStyle(
+                                                  fontSize: 17,
+                                                  color: Colors.orange,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              ),
+                                            ),
+
+                                            //+ 2 -
+                                            Row(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.center,
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.end,
+                                              children: [
+                                                //-
+                                                IconButton(
+                                                  onPressed: () {
+                                                    if (cartModel.quantity! -
+                                                            1 >=
+                                                        1) {
+                                                      updateQuantityInUserCart(
+                                                        cartModel.cart_id!,
+                                                        cartModel.quantity! - 1,
+                                                      );
+                                                    }
+                                                  },
+                                                  icon: const Icon(
+                                                    Icons.remove_circle_outline,
+                                                    color: Colors.orange,
+                                                    size: 23,
+                                                  ),
+                                                ),
+
+                                                const SizedBox(
+                                                  width: 10,
+                                                ),
+
+                                                Text(
+                                                  cartModel.quantity.toString(),
+                                                  style: const TextStyle(
+                                                    color: Color(0xff2c3e50),
+                                                    fontSize: 16,
+                                                  ),
+                                                ),
+
+                                                const SizedBox(
+                                                  width: 10,
+                                                ),
+
+                                                //+
+                                                IconButton(
+                                                  onPressed: () {
                                                     updateQuantityInUserCart(
                                                       cartModel.cart_id!,
-                                                      cartModel.quantity! - 1,
+                                                      cartModel.quantity! + 1,
                                                     );
-                                                  }
-                                                },
-                                                icon: const Icon(
-                                                  Icons.remove_circle_outline,
-                                                  color: Colors.orange,
-                                                  size: 23,
+                                                  },
+                                                  icon: const Icon(
+                                                    Icons.add_circle_outline,
+                                                    color: Colors.orange,
+                                                    size: 23,
+                                                  ),
                                                 ),
-                                              ),
-
-                                              const SizedBox(
-                                                width: 10,
-                                              ),
-
-                                              Text(
-                                                cartModel.quantity.toString(),
-                                                style: const TextStyle(
-                                                  color: Color(0xff2c3e50),
-                                                  fontSize: 16,
-                                                ),
-                                              ),
-
-                                              const SizedBox(
-                                                width: 10,
-                                              ),
-
-                                              //+
-                                              IconButton(
-                                                onPressed: () {
-                                                  updateQuantityInUserCart(
-                                                    cartModel.cart_id!,
-                                                    cartModel.quantity! + 1,
-                                                  );
-                                                },
-                                                icon: const Icon(
-                                                  Icons.add_circle_outline,
-                                                  color: Colors.orange,
-                                                  size: 23,
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ],
+                                              ],
+                                            ),
+                                          ],
+                                        ),
                                       ),
                                     ),
-                                  ),
 
-                                  //item image
-                                ],
+                                    //item image
+                                  ],
+                                ),
                               ),
                             ),
                           ),
-                        ),
-                      ],
-                    ),
-                  );
-                },
-              )
-            : const Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Center(
-                    child: Column(
-                      children: [
-                        Image(
-                          image: AssetImage("images/icon-kardus-trisakti.png"),
-                          width: 130,
-                        ),
-                        SizedBox(height: 10),
-                        Text(
-                          "Keranjang kamu kosong nih",
-                          style: TextStyle(
-                            color: Color(0xffbdc3c7),
+                        ],
+                      ),
+                    );
+                  },
+                )
+              : const Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Center(
+                      child: Column(
+                        children: [
+                          Image(
+                            image:
+                                AssetImage("images/icon-kardus-trisakti.png"),
+                            width: 130,
                           ),
-                        ),
-                      ],
+                          SizedBox(height: 10),
+                          Text(
+                            "Keranjang kamu kosong nih",
+                            style: TextStyle(
+                              color: Color(0xffbdc3c7),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                ],
-              ),
+                  ],
+                ),
+        ),
       ),
       bottomNavigationBar: SizedBox(
         height: 70,

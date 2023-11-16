@@ -12,9 +12,24 @@ import 'package:store_app/users/item/item_details_screen.dart';
 import 'package:store_app/users/item/search_items.dart';
 import 'package:store_app/users/model/clothes.dart';
 import 'package:intl/intl.dart';
+import 'package:liquid_pull_to_refresh/liquid_pull_to_refresh.dart';
 
-class HomeFragmentScreen extends StatelessWidget {
+class HomeFragmentScreen extends StatefulWidget {
+  @override
+  State<HomeFragmentScreen> createState() => _HomeFragmentScreenState();
+}
+
+class _HomeFragmentScreenState extends State<HomeFragmentScreen> {
   TextEditingController searchController = TextEditingController();
+
+  Future<void> _handleRefresh() async {
+    await Future.delayed(Duration(seconds: 2));
+    setState(() {
+      allItemWidget(context);
+      getTrendingClothItems();
+    });
+  }
+
   NumberFormat formatter = NumberFormat.currency(
     locale: 'id',
     symbol: 'Rp',
@@ -91,51 +106,58 @@ class HomeFragmentScreen extends StatelessWidget {
           ],
         ),
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const SizedBox(
-              height: 16,
-            ),
+      body: LiquidPullToRefresh(
+        onRefresh: _handleRefresh,
+        animSpeedFactor: 4,
+        color: Color(0xff6b83bc),
+        showChildOpacityTransition: false,
+        child: SingleChildScrollView(
+          physics: AlwaysScrollableScrollPhysics(),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const SizedBox(
+                height: 16,
+              ),
 
-            const SizedBox(
-              height: 24,
-            ),
+              const SizedBox(
+                height: 24,
+              ),
 
-            //trending-popular items
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 18),
-              child: Text(
-                "Trending",
-                style: TextStyle(
-                  color: Color(0xff2f3542),
-                  fontWeight: FontWeight.bold,
-                  fontSize: 24,
+              //trending-popular items
+              const Padding(
+                padding: EdgeInsets.symmetric(horizontal: 18),
+                child: Text(
+                  "Trending",
+                  style: TextStyle(
+                    color: Color(0xff2f3542),
+                    fontWeight: FontWeight.bold,
+                    fontSize: 24,
+                  ),
                 ),
               ),
-            ),
-            trendingMostPopularClothItemWidget(context),
+              trendingMostPopularClothItemWidget(context),
 
-            const SizedBox(
-              height: 20,
-            ),
+              const SizedBox(
+                height: 20,
+              ),
 
-            //all new collections/items
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 18),
-              child: Text(
-                "New Collections",
-                style: TextStyle(
-                  color: Color(0xff2f3542),
-                  fontWeight: FontWeight.bold,
-                  fontSize: 24,
+              //all new collections/items
+              const Padding(
+                padding: EdgeInsets.symmetric(horizontal: 18),
+                child: Text(
+                  "New Collections",
+                  style: TextStyle(
+                    color: Color(0xff2f3542),
+                    fontWeight: FontWeight.bold,
+                    fontSize: 24,
+                  ),
                 ),
               ),
-            ),
 
-            allItemWidget(context),
-          ],
+              allItemWidget(context),
+            ],
+          ),
         ),
       ),
     );
@@ -389,7 +411,7 @@ class HomeFragmentScreen extends StatelessWidget {
               scrollDirection: Axis.vertical,
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 2,
-                childAspectRatio: 0.64,
+                childAspectRatio: 0.63,
               ),
               itemCount: dataSnapShot.data!.length,
               shrinkWrap: true,
@@ -485,10 +507,6 @@ class HomeFragmentScreen extends StatelessWidget {
                                       ),
                                     ),
 
-                                    SizedBox(
-                                      height: 20,
-                                    ),
-
                                     //price
                                     Expanded(
                                       child: Text(
@@ -501,10 +519,6 @@ class HomeFragmentScreen extends StatelessWidget {
                                           color: Color(0xff575fcf),
                                         ),
                                       ),
-                                    ),
-
-                                    const SizedBox(
-                                      height: 16,
                                     ),
                                   ],
                                 ),
