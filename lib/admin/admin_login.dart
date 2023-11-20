@@ -6,13 +6,8 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:store_app/admin/admin_get_all_orders.dart';
-import 'package:store_app/admin/admin_upload_items.dart';
 import 'package:store_app/api_connection/api_connection.dart';
 import 'package:store_app/users/authentication/login_screen.dart';
-import 'package:store_app/users/authentication/signup_screen.dart';
-import 'package:store_app/users/fragments/dashboard_of_fragments.dart';
-import 'package:store_app/users/model/user.dart';
-import 'package:store_app/users/userPreferences/user_preferences.dart';
 
 class AdminLoginScreen extends StatefulWidget {
   @override

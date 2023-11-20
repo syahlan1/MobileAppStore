@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
-import 'package:store_app/users/controllers/cart_list_controller.dart';
 import 'package:store_app/users/controllers/order_now_controller.dart';
 import 'package:intl/intl.dart';
 import 'package:store_app/users/order/order_confirmation.dart';

@@ -6,11 +6,8 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_navigation/get_navigation.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:store_app/admin/admin_get_all_orders.dart';
-import 'package:store_app/admin/admin_login.dart';
 import 'package:http/http.dart' as http;
 import 'package:store_app/api_connection/api_connection.dart';
-import 'package:store_app/users/authentication/login_screen.dart';
 
 class AdminUploadItemsScreen extends StatefulWidget {
   @override

@@ -8,7 +8,6 @@ import 'package:image_picker/image_picker.dart';
 import 'package:path/path.dart' as path;
 import 'package:store_app/api_connection/api_connection.dart';
 import 'package:store_app/users/fragments/dashboard_of_fragments.dart';
-import 'package:store_app/users/fragments/order_fragment_screen.dart';
 import 'package:store_app/users/model/order.dart';
 import 'package:store_app/users/userPreferences/current_user.dart';
 import 'package:http/http.dart' as http;

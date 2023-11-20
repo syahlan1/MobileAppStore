@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_instance/get_instance.dart';
-import 'package:http/http.dart';
+import 'package:store_app/seller/home_seller.dart';
 import 'package:store_app/users/authentication/login_screen.dart';
 import 'package:store_app/users/userPreferences/current_user.dart';
 import 'package:store_app/users/userPreferences/user_preferences.dart';
@@ -76,64 +76,85 @@ class ProfileFragmentScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: ListView(
-        children: [
-          Container(
-            height: 220,
-            color: Color(0xff6b83bc),
-            child: Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  SizedBox(
-                    height: 20,
-                  ),
-                  Image.asset(
-                    "images/man.png",
-                    width: 90,
-                  ),
-                  SizedBox(
-                    height: 5,
-                  ),
-                  Text(
-                    _currentUser.user.user_name,
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 20,
+    return Scaffold(
+      body: Container(
+        child: ListView(
+          children: [
+            Container(
+              height: 220,
+              color: Color(0xff6b83bc),
+              child: Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    SizedBox(
+                      height: 20,
                     ),
-                  ),
-                  SizedBox(
-                    height: 5,
-                  ),
-                  Text(
-                    _currentUser.user.user_email,
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 16,
+                    Image.asset(
+                      "images/man.png",
+                      width: 90,
                     ),
-                  ),
-                  const SizedBox(
-                    height: 20,
-                  ),
-                ],
+                    SizedBox(
+                      height: 5,
+                    ),
+                    Text(
+                      _currentUser.user.user_name,
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 20,
+                      ),
+                    ),
+                    SizedBox(
+                      height: 5,
+                    ),
+                    Text(
+                      _currentUser.user.user_email,
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 16,
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                  ],
+                ),
               ),
             ),
-          ),
-          SizedBox(height: 40),
-          ListTile(
-            leading: Icon(Icons.language),
-            title: Text("Bahasa"),
-            onTap: () {},
-          ),
-          ListTile(
-            leading: Icon(Icons.logout),
-            title: Text("Logout"),
-            onTap: () {
-              signOutUser();
-            },
-          ),
-        ],
+            SizedBox(height: 40),
+            ListTile(
+              leading: Icon(Icons.storefront),
+              title: Text("Toko Saya"),
+              onTap: () {
+                Get.to(HomeSeller());
+              },
+              trailing: Icon(Icons.chevron_right_rounded),
+            ),
+            ListTile(
+              leading: Icon(Icons.language),
+              title: Text("Bahasa"),
+              onTap: () {},
+              trailing: Icon(Icons.chevron_right_rounded),
+            ),
+            ListTile(
+              leading: Icon(
+                Icons.logout,
+                color: Colors.redAccent,
+              ),
+              title: Text(
+                "Logout",
+                style: TextStyle(color: Colors.redAccent),
+              ),
+              trailing: Icon(
+                Icons.chevron_right_rounded,
+                color: Colors.redAccent,
+              ),
+              onTap: () {
+                signOutUser();
+              },
+            ),
+          ],
+        ),
       ),
     );
   }
